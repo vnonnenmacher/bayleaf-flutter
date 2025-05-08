@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'features/auth/login_screen.dart';
 import 'features/home/home_page.dart'; // You already have a HomePage
-import 'core/config.dart'; // Config with API base URL
+import 'features/auth/patient_registration_screen.dart';
 
 void main() {
   runApp(const BayleafApp());
@@ -22,6 +22,10 @@ class BayleafApp extends StatelessWidget {
         GoRoute(
           path: '/home',
           builder: (context, state) => const HomePage(),
+        ),
+        GoRoute(
+          path: '/register',
+          builder: (context, state) => const PatientRegistrationScreen(),
         ),
       ],
     );

@@ -23,6 +23,7 @@ class AuthService {
 
       return response.data; // expected to contain token + user info
     } on DioException catch (e) {
+      print("Full error response: ${e.response?.data}");  // 🔥 Add this line
       final errorMessage =
           e.response?.data['detail'] ?? 'Login failed. Please try again.';
       throw Exception(errorMessage);
