@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart';
+import '../home/home_page.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,12 +18,15 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   String? _error;
 
-  final _authService = AuthService();
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
-  void _handleLogin() async {
+  Future<void> _handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
-
-    print("Login button pressed");
 
     setState(() {
       _isLoading = true;
@@ -29,21 +34,41 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final data = await _authService.login(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
+      final response = await Dio().post(
+        'http://10.0.2.2:8000/api/users/login/',
+        data: {
+          'email': _emailController.text,
+          'password': _passwordController.text,
+        },
       );
 
-      print("Login success! Data: $data");
+      print('Response: ${response.data}');
+      final accessToken = response.data['access'];
+      final refreshToken = response.data['refresh'];
 
-      if (mounted) {
-        context.go('/home');
-      }
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('authToken', accessToken);
+      await prefs.setString('refreshToken', refreshToken);
+
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+      );
     } catch (e) {
-      print("Login error: $e");
-      setState(() => _error = e.toString());
+      print('Login error: $e');
+      if (e is DioException) {
+        print('Dio response data: ${e.response?.data}');
+      }
+      setState(() {
+        _error = 'Login failed. Please check your credentials.';
+      });
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -51,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: const Color(0xFFD0E8F2), // Slightly deeper blue background
+        color: const Color(0xFFD0E8F2),
         width: double.infinity,
         height: double.infinity,
         child: Center(
@@ -62,34 +87,31 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // 🔵 Logo
                   Image.asset(
                     'assets/images/bayleaf_logo.png',
                     height: 100,
                     width: 100,
                   ),
                   const SizedBox(height: 16),
-
-                  // 🔵 Title
                   const Text(
                     'Welcome to Bayleaf',
                     style: TextStyle(
                       fontSize: 22,
-                      fontWeight: FontWeight.w700, // Slightly bolder
-                      color: Color(0xFF2E7D32), // Dark green for hierarchy
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF2E7D32),
                     ),
                   ),
-
                   const SizedBox(height: 32),
 
                   if (_error != null)
-                    Text(
-                      _error!,
-                      style: const TextStyle(color: Colors.red),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(
+                        _error!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
                     ),
 
-                  // 🔐 Email Field
-                  const SizedBox(height: 12),
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -109,8 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         value!.isEmpty ? 'Enter your email' : null,
                   ),
 
-                  // 🔒 Password Field
                   const SizedBox(height: 12),
+
                   TextFormField(
                     controller: _passwordController,
                     obscureText: true,
@@ -131,25 +153,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 24),
 
-                  // 🔵 Login Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color(0xFF2E7D32), // Slightly deeper green
+                        backgroundColor: const Color(0xFF2E7D32),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        elevation: 6, // Slightly stronger shadow
-                        padding:
-                            const EdgeInsets.symmetric(vertical: 16),
+                        elevation: 6,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       onPressed: _isLoading ? null : _handleLogin,
                       child: _isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
+                          ? const CircularProgressIndicator(color: Colors.white)
                           : const Text(
                               'Login',
                               style: TextStyle(
@@ -161,17 +178,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  // 🔵 Register Link
-                  const SizedBox(height: 24), // Slightly more spacing for better tap area
+                  const SizedBox(height: 24),
+
                   TextButton(
                     onPressed: () {
                       context.go('/register');
                     },
                     child: const Text(
                       "Don't have an account? Register here",
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
                 ],

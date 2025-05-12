@@ -1,3 +1,6 @@
+import 'package:bayleaf_flutter/features/appointments/appointments_screen.dart';
+import 'package:bayleaf_flutter/features/doctors/doctos_screen.dart';
+import 'package:bayleaf_flutter/features/exams/exams_screen.dart';
 import 'package:flutter/material.dart';
 import '../medications/medications_screen.dart';
 import '../profile/patient_profile_screen.dart';
@@ -67,9 +70,9 @@ class _HomePageState extends State<HomePage> {
         children: [
           _buildFeedTimelinePage(),
           const MedicationsScreen(),
-          const Placeholder(),
-          const Placeholder(),
-          const Placeholder(),
+          const AppointmentsScreen(),
+          const ExamsScreen(),
+          const DoctorsScreen(),
         ],
       ),
 

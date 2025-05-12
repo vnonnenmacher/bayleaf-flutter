@@ -8,8 +8,9 @@ class PatientProfileScreen extends StatefulWidget {
   State<PatientProfileScreen> createState() => _PatientProfileScreenState();
 }
 
-class _PatientProfileScreenState extends State<PatientProfileScreen> {
+class _PatientProfileScreenState extends State<PatientProfileScreen> with TickerProviderStateMixin {
   bool isEditing = false;
+  int selectedTab = 0;
 
   String firstName = 'John';
   String lastName = 'Doe';
@@ -18,6 +19,13 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
+
+  final TextEditingController _streetController = TextEditingController(text: '1234 Main St');
+  final TextEditingController _cityController = TextEditingController(text: 'Porto Alegre');
+  final TextEditingController _zipController = TextEditingController(text: '90100-000');
+  final TextEditingController _stateController = TextEditingController(text: 'RS');
+
+  final List<String> tabs = ['Personal Info', 'Address', 'Financials'];
 
   @override
   void initState() {
@@ -81,9 +89,9 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
             )
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
+      body: Column(
         children: [
+          const SizedBox(height: 24),
           Center(
             child: Stack(
               alignment: Alignment.bottomRight,
@@ -114,7 +122,41 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(tabs.length, (index) {
+              final selected = selectedTab == index;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: selected ? const Color(0xFF2E7D32) : Colors.grey[300],
+                    foregroundColor: selected ? Colors.white : Colors.black87,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  onPressed: () => setState(() => selectedTab = index),
+                  child: Text(tabs[index]),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(24),
+              children: _buildTabContent(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildTabContent() {
+    switch (selectedTab) {
+      case 0:
+        return [
           _editableCard(
             icon: Icons.person,
             label: 'First Name',
@@ -148,9 +190,79 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
             title: const Text('Logout', style: TextStyle(color: Colors.red)),
             onTap: () {},
           ),
-        ],
-      ),
-    );
+        ];
+      case 1:
+        return [
+          _editableCard(
+            icon: Icons.location_on_rounded,
+            label: 'Street',
+            controller: _streetController,
+            isEditable: isEditing,
+          ),
+          _editableCard(
+            icon: Icons.location_city,
+            label: 'City',
+            controller: _cityController,
+            isEditable: isEditing,
+          ),
+          _editableCard(
+            icon: Icons.pin_drop,
+            label: 'ZIP Code',
+            controller: _zipController,
+            isEditable: isEditing,
+          ),
+          _editableCard(
+            icon: Icons.map,
+            label: 'State',
+            controller: _stateController,
+            isEditable: isEditing,
+          ),
+        ];
+      case 2:
+        return [
+          Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 16),
+            child: ListTile(
+              leading: const Icon(Icons.credit_card, color: Color(0xFF2E7D32)),
+              title: const Text('Mastercard ending in 4242'),
+              subtitle: const Text('Expires 08/25'),
+              trailing: TextButton(onPressed: () {}, child: const Text('Edit')),
+            ),
+          ),
+          const Divider(),
+          Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 12),
+            child: ListTile(
+              leading: const Icon(Icons.receipt_long, color: Color(0xFF2E7D32)),
+              title: const Text('Invoice #10001 – Jan 2025'),
+              subtitle: const Text('Paid – R\$ 120,00'),
+              trailing: const Icon(Icons.check_circle, color: Colors.green),
+              onTap: () {},
+            ),
+          ),
+          Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 12),
+            child: ListTile(
+              leading: const Icon(Icons.receipt_long, color: Color(0xFF2E7D32)),
+              title: const Text('Invoice #10002 – Feb 2025'),
+              subtitle: const Text('Pending – R\$ 150,00'),
+              trailing: const Icon(Icons.hourglass_bottom, color: Colors.orange),
+              onTap: () {},
+            ),
+          ),
+        ];
+      default:
+        return [];
+    }
   }
 
   Widget _editableCard({
