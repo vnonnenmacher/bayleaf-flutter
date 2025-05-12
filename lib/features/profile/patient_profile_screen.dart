@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PatientProfileScreen extends StatefulWidget {
   const PatientProfileScreen({super.key});
@@ -45,12 +47,53 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
     });
   }
 
-  void _saveProfile() {
+  Future<void> _saveProfile() async {
     setState(() {
       firstName = _firstNameController.text;
       lastName = _lastNameController.text;
       isEditing = false;
     });
+
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('authToken');
+    if (token == null) {
+      print('No token found');
+      return;
+    }
+
+    final data = {
+      "pid": "75ad468a-a1b1-4764-bca9-b972fb740771",
+      "first_name": _firstNameController.text,
+      "last_name": _lastNameController.text,
+      "birth_date": DateFormat('yyyy-MM-dd').format(birthDate),
+      "address1": {
+        "id": 13,
+        "street": _streetController.text,
+        "city": _cityController.text,
+        "state": _stateController.text,
+        "zip_code": _zipController.text,
+        "country": "USA"
+      }
+    };
+
+    try {
+      final response = await Dio().patch(
+        'http://10.0.2.2:8000/api/patients/profile/',
+        data: data,
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+      print('Profile updated: ${response.data}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Profile updated successfully!")),
+      );
+    } catch (e) {
+      print('Error updating profile: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Failed to update profile.")),
+      );
+    }
   }
 
   Future<void> _pickDate() async {
@@ -108,8 +151,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
                     child: CircleAvatar(
                       radius: 16,
                       backgroundColor: Colors.white,
-                      child:
-                          Icon(Icons.edit, size: 18, color: Colors.black87),
+                      child: Icon(Icons.edit, size: 18, color: Colors.black87),
                     ),
                   ),
               ],
@@ -157,21 +199,10 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
     switch (selectedTab) {
       case 0:
         return [
-          _editableCard(
-            icon: Icons.person,
-            label: 'First Name',
-            controller: _firstNameController,
-            isEditable: isEditing,
-          ),
-          _editableCard(
-            icon: Icons.person,
-            label: 'Last Name',
-            controller: _lastNameController,
-            isEditable: isEditing,
-          ),
+          _editableCard(icon: Icons.person, label: 'First Name', controller: _firstNameController, isEditable: isEditing),
+          _editableCard(icon: Icons.person, label: 'Last Name', controller: _lastNameController, isEditable: isEditing),
           _birthDateCard(),
-          _readonlyCard(
-              icon: Icons.email, label: 'Email', value: email, lock: true),
+          _readonlyCard(icon: Icons.email, label: 'Email', value: email, lock: true),
           const SizedBox(height: 32),
           const Divider(),
           ListTile(
@@ -193,36 +224,15 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
         ];
       case 1:
         return [
-          _editableCard(
-            icon: Icons.location_on_rounded,
-            label: 'Street',
-            controller: _streetController,
-            isEditable: isEditing,
-          ),
-          _editableCard(
-            icon: Icons.location_city,
-            label: 'City',
-            controller: _cityController,
-            isEditable: isEditing,
-          ),
-          _editableCard(
-            icon: Icons.pin_drop,
-            label: 'ZIP Code',
-            controller: _zipController,
-            isEditable: isEditing,
-          ),
-          _editableCard(
-            icon: Icons.map,
-            label: 'State',
-            controller: _stateController,
-            isEditable: isEditing,
-          ),
+          _editableCard(icon: Icons.location_on_rounded, label: 'Street', controller: _streetController, isEditable: isEditing),
+          _editableCard(icon: Icons.location_city, label: 'City', controller: _cityController, isEditable: isEditing),
+          _editableCard(icon: Icons.pin_drop, label: 'ZIP Code', controller: _zipController, isEditable: isEditing),
+          _editableCard(icon: Icons.map, label: 'State', controller: _stateController, isEditable: isEditing),
         ];
       case 2:
         return [
           Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 2,
             margin: const EdgeInsets.only(bottom: 16),
             child: ListTile(
@@ -234,8 +244,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
           ),
           const Divider(),
           Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 2,
             margin: const EdgeInsets.only(bottom: 12),
             child: ListTile(
@@ -247,8 +256,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
             ),
           ),
           Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 2,
             margin: const EdgeInsets.only(bottom: 12),
             child: ListTile(
@@ -277,16 +285,13 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
       elevation: 2,
       child: ListTile(
         leading: Icon(icon, color: const Color(0xFF2E7D32)),
-        title: Text(label,
-            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
+        title: Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
         subtitle: isEditable
             ? TextField(
                 controller: controller,
                 decoration: const InputDecoration(border: InputBorder.none),
               )
-            : Text(controller.text,
-                style:
-                    const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
+            : Text(controller.text, style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
       ),
     );
   }
@@ -298,24 +303,18 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
       elevation: 2,
       child: ListTile(
         leading: const Icon(Icons.cake, color: Color(0xFF2E7D32)),
-        title: const Text('Date of Birth',
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
+        title: const Text('Date of Birth', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
         subtitle: isEditing
             ? GestureDetector(
                 onTap: _pickDate,
                 child: Text(
                   DateFormat.yMMMMd().format(birthDate),
                   style: const TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                      decoration: TextDecoration.underline),
+                      fontWeight: FontWeight.w400, fontSize: 16, decoration: TextDecoration.underline),
                 ),
               )
-            : Text(
-                DateFormat.yMMMMd().format(birthDate),
-                style:
-                    const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
-              ),
+            : Text(DateFormat.yMMMMd().format(birthDate),
+                style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
       ),
     );
   }
@@ -332,10 +331,8 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
       elevation: 2,
       child: ListTile(
         leading: Icon(icon, color: const Color(0xFF2E7D32)),
-        title: Text(label,
-            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
-        subtitle: Text(value,
-            style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
+        title: Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
+        subtitle: Text(value, style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
         trailing: lock ? const Icon(Icons.lock_outline, size: 18) : null,
       ),
     );
