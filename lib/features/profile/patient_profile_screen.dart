@@ -1,3 +1,4 @@
+import 'package:bayleaf_flutter/features/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dio/dio.dart';
@@ -219,7 +220,16 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text('Logout', style: TextStyle(color: Colors.red)),
-            onTap: () {},
+            onTap: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.clear(); // Clears all stored tokens/info
+              if (mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false,
+                );
+              }
+            },
           ),
         ];
       case 1:
