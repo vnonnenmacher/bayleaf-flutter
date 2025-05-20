@@ -4,7 +4,7 @@ import 'package:bayleaf_flutter/features/exams/exams_screen.dart';
 import 'package:flutter/material.dart';
 import '../medications/medications_screen.dart';
 import '../profile/patient_profile_screen.dart';
-
+import '../../theme/app_colors.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
   int _selectedIndex = 0;
-  bool showTimeline = false; // Feed default
+  bool showTimeline = false;
 
   void _onTabTapped(int index) {
     setState(() => _selectedIndex = index);
@@ -27,43 +27,34 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFFD0E8F2),
-        elevation: 0,
-        title: const Text(
-          'Bayleaf',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF2E7D32),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none),
-            color: Colors.black87,
-            onPressed: () {
-              // TODO: Notifications
-            },
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PatientProfileScreen(),
-                ),
-              );
-            },
-            child: const CircleAvatar(
-              radius: 16,
-              backgroundColor: Colors.grey,
-              child: Icon(Icons.person, color: Colors.white),
-            ),
-          ),
-          const SizedBox(width: 12),
+      backgroundColor: AppColors.appBarBackground,
+      elevation: 1.5,
+      titleSpacing: 16,
+      title: Row(
+        children: [
+          Image.asset('assets/images/bayleaf_logo.png', height: 28), // Simple logo asset
         ],
       ),
-
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.notifications_none),
+          color: AppColors.appBarIcon,
+          onPressed: () {},
+        ),
+        const SizedBox(width: 8),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const PatientProfileScreen()));
+          },
+          child: const CircleAvatar(
+            radius: 16,
+            backgroundColor: AppColors.greyLight,
+            child: Icon(Icons.person, color: AppColors.textSecondary, size: 20),
+          ),
+        ),
+        const SizedBox(width: 12),
+      ],
+    ),
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
@@ -75,10 +66,9 @@ class _HomePageState extends State<HomePage> {
           const DoctorsScreen(),
         ],
       ),
-
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: const Color(0xFF2E7D32),
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.greyMedium,
         currentIndex: _selectedIndex,
         onTap: _onTabTapped,
         items: const [
@@ -116,8 +106,8 @@ class _HomePageState extends State<HomePage> {
           children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: !showTimeline ? const Color(0xFF2E7D32) : Colors.grey[300],
-                foregroundColor: !showTimeline ? Colors.white : Colors.black87,
+                backgroundColor: !showTimeline ? AppColors.primary : AppColors.greyLight,
+                foregroundColor: !showTimeline ? AppColors.textInverse : AppColors.textPrimary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -132,8 +122,8 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(width: 8),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: showTimeline ? const Color(0xFF2E7D32) : Colors.grey[300],
-                foregroundColor: showTimeline ? Colors.white : Colors.black87,
+                backgroundColor: showTimeline ? AppColors.primary : AppColors.greyLight,
+                foregroundColor: showTimeline ? AppColors.textInverse : AppColors.textPrimary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -163,9 +153,18 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.all(16),
       children: [
         _feedAiMoodCard(),
-        _feedCard(title: 'How to manage your medications effectively', description: 'Check out these 5 expert tips to ensure you never miss a dose.'),
-        _feedCard(title: 'Upcoming Health Webinar', description: 'Join our physiotherapy webinar on May 10th to learn at-home exercises.'),
-        _feedCard(title: 'New Feature: Track Symptoms', description: 'Now you can log daily symptoms directly in Bayleaf. Try it today!'),
+        _feedCard(
+          title: 'How to manage your medications effectively',
+          description: 'Check out these 5 expert tips to ensure you never miss a dose.',
+        ),
+        _feedCard(
+          title: 'Upcoming Health Webinar',
+          description: 'Join our physiotherapy webinar on May 10th to learn at-home exercises.',
+        ),
+        _feedCard(
+          title: 'New Feature: Track Symptoms',
+          description: 'Now you can log daily symptoms directly in Bayleaf. Try it today!',
+        ),
       ],
     );
   }
@@ -198,10 +197,12 @@ class _HomePageState extends State<HomePage> {
           children: [
             Row(
               children: const [
-                Icon(Icons.smart_toy, color: Color(0xFF2E7D32)),
+                Icon(Icons.smart_toy, color: AppColors.primary),
                 SizedBox(width: 8),
-                Text('How are you feeling today?',
-                    style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic, fontWeight: FontWeight.w500)),
+                Text(
+                  'How are you feeling today?',
+                  style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic, fontWeight: FontWeight.w500),
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -222,7 +223,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {},
                 child: const Text(
                   'Tell me more',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF2E7D32)),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.primary),
                 ),
               ),
             ),
@@ -243,7 +244,7 @@ class _HomePageState extends State<HomePage> {
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        leading: Icon(icon, size: 32, color: Color(0xFF2E7D32)),
+        leading: Icon(icon, size: 32, color: AppColors.primary),
         title: Text(title),
         subtitle: Text(subtitle),
         trailing: TextButton(
@@ -266,7 +267,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
-            Text(description, style: const TextStyle(fontSize: 14, color: Colors.black87)),
+            Text(description, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
           ],
         ),
       ),

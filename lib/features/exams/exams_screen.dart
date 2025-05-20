@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/app_colors.dart';
 
 class ExamsScreen extends StatelessWidget {
   const ExamsScreen({super.key});
@@ -7,7 +8,7 @@ class ExamsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF2E7D32),
+        backgroundColor: AppColors.primary,
         onPressed: () {
           // TODO: Implement exam scheduling
         },

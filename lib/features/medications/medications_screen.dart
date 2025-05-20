@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/app_colors.dart';
 
 class MedicationsScreen extends StatefulWidget {
   const MedicationsScreen({super.key});
@@ -22,9 +23,9 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
-                      showMedications ? const Color(0xFF2E7D32) : Colors.grey[300],
+                      showMedications ? AppColors.primary : AppColors.greyLight,
                   foregroundColor:
-                      showMedications ? Colors.white : Colors.black87,
+                      showMedications ? AppColors.textInverse : AppColors.textPrimary,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
                 ),
@@ -37,9 +38,9 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
-                      !showMedications ? const Color(0xFF2E7D32) : Colors.grey[300],
+                      !showMedications ? AppColors.primary : AppColors.greyLight,
                   foregroundColor:
-                      !showMedications ? Colors.white : Colors.black87,
+                      !showMedications ? AppColors.textInverse : AppColors.textPrimary,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
                 ),
@@ -61,7 +62,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF2E7D32),
+        backgroundColor: AppColors.primary,
         tooltip: showMedications ? 'Add Medication' : 'Add Vaccine',
         child: Icon(showMedications ? Icons.add : Icons.vaccines_outlined),
         onPressed: () {
@@ -87,7 +88,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        leading: const Icon(Icons.medication_liquid, color: Color(0xFF2E7D32)),
+        leading: const Icon(Icons.medication_liquid, color: AppColors.primary),
         title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(frequency),
         trailing: Row(
@@ -146,7 +147,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
         border: Border.all(color: Colors.grey.shade300),
       ),
       child: ListTile(
-        leading: Icon(icon, color: const Color(0xFF2E7D32)),
+        leading: Icon(icon, color: AppColors.primary),
         title: Text(label),
         subtitle: Text(date),
       ),

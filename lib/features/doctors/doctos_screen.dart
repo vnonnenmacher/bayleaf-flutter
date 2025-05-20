@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/app_colors.dart';
 
 class DoctorsScreen extends StatelessWidget {
   const DoctorsScreen({super.key});
@@ -7,7 +8,7 @@ class DoctorsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF2E7D32),
+        backgroundColor: AppColors.primary,
         onPressed: () {
           // TODO: Add doctor search or add flow
         },
@@ -133,16 +134,16 @@ class DoctorsScreen extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Color(0xFF2E7D32)),
+                      side: BorderSide(color: AppColors.primary),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    icon: const Icon(Icons.calendar_today, color: Color(0xFF2E7D32), size: 18),
-                    label: const Text(
+                    icon: Icon(Icons.calendar_today, color: AppColors.primary, size: 18),
+                    label: Text(
                       'Book Appointment',
-                      style: TextStyle(color: Color(0xFF2E7D32)),
+                      style: TextStyle(color: AppColors.primary),
                     ),
                     onPressed: () {
                       // TODO: Book appointment

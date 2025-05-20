@@ -30,3 +30,13 @@ class AuthService {
     }
   }
 }
+
+Future<bool> checkBackendHealth() async {
+  try {
+    final response = await Dio().get('${AppConfig.apiBaseUrl}/api/core/healthcheck');
+    return response.statusCode == 200;
+  } catch (e) {
+    print("Healthcheck failed: $e");
+    return false;
+  }
+}

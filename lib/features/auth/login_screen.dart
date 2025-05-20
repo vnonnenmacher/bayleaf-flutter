@@ -1,8 +1,11 @@
+import 'package:bayleaf_flutter/core/config.dart';
+import 'package:bayleaf_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 import '../home/home_page.dart';
+import '../../theme/app_colors.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,6 +29,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
+  final healthy = await checkBackendHealth();
+    if (!healthy) {
+      setState(() {
+        _error = 'Our system is currently unavailable. Please try again later.';
+      });
+      return;
+    }
+
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -35,21 +46,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final response = await Dio().post(
-        'http://10.0.2.2:8000/api/users/login/',
+        '${AppConfig.apiBaseUrl}/api/users/login/',
         data: {
           'email': _emailController.text,
           'password': _passwordController.text,
         },
       );
 
-      print('Response: ${response.data}');
       final accessToken = response.data['access'];
       final refreshToken = response.data['refresh'];
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('authToken', accessToken);
       await prefs.setString('refreshToken', refreshToken);
-
 
       if (!mounted) return;
 
@@ -58,10 +67,6 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (_) => const HomePage()),
       );
     } catch (e) {
-      print('Login error: $e');
-      if (e is DioException) {
-        print('Dio response data: ${e.response?.data}');
-      }
       setState(() {
         _error = 'Login failed. Please check your credentials.';
       });
@@ -72,11 +77,12 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: const Color(0xFFD0E8F2),
+        color: AppColors.background,
         width: double.infinity,
         height: double.infinity,
         child: Center(
@@ -98,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF2E7D32),
+                      color: AppColors.primary,
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -124,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: Color(0xFF4CAF50)),
+                        borderSide: const BorderSide(color: AppColors.primary),
                       ),
                     ),
                     validator: (value) =>
@@ -144,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: Color(0xFF4CAF50)),
+                        borderSide: const BorderSide(color: AppColors.primary),
                       ),
                     ),
                     validator: (value) =>
@@ -157,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2E7D32),
+                        backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
