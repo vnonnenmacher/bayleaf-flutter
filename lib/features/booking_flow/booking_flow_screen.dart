@@ -11,12 +11,12 @@ import 'package:bayleaf_flutter/theme/app_colors.dart';
 
 class BookingFlowScreen extends StatefulWidget {
   final int? preselectedServiceId;
-  final int? preselectedDoctorId;
+  final int? preselectedProfessionalId;
 
   const BookingFlowScreen({
     super.key,
     this.preselectedServiceId,
-    this.preselectedDoctorId,
+    this.preselectedProfessionalId,
   });
 
   @override
@@ -28,7 +28,7 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
   final BookingFlowState flowState = BookingFlowState();
   List<ServiceModel> availableServices = [];
   DateTime filterDate = DateTime.now();
-  List<ProfessionalModel> availableDoctors = [];
+  List<ProfessionalModel> availableProfessionals = [];
 
   @override
   void initState() {
@@ -37,8 +37,8 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
     if (widget.preselectedServiceId != null) {
       flowState.selectedServiceId = widget.preselectedServiceId;
     }
-    if (widget.preselectedDoctorId != null) {
-      flowState.selectedDoctorId = widget.preselectedDoctorId;
+    if (widget.preselectedProfessionalId != null) {
+      flowState.selectedProfessionalId = widget.preselectedProfessionalId;
     }
 
     _fetchAvailableServices();
@@ -81,12 +81,12 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
       final slots = results.map((json) => SlotModel.fromJson(json)).toList();
 
       // ------> Add this code:
-      final List doctorResults = response.data['doctors'] ?? [];
-      final doctors = doctorResults.map((json) => ProfessionalModel.fromJson(json)).toList();
+      final List doctorResults = response.data['professionals'] ?? [];
+      final professionals = doctorResults.map((json) => ProfessionalModel.fromJson(json)).toList();
 
       setState(() {
         flowState.availableSlots = slots;
-        availableDoctors = doctors; // <------ store in the state!
+        availableProfessionals = professionals; // <------ store in the state!
       });
     } catch (e) {
       print('Failed to fetch slots: $e');
@@ -123,7 +123,7 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
           flowState: flowState,
           selectedServiceId: flowState.selectedServiceId,
           availableServices: availableServices,
-          availableDoctors: availableDoctors,
+          availableProfessionals: availableProfessionals,
           filterDate: filterDate,
           onDateChanged: (date) {
             setState(() {
@@ -139,11 +139,11 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
           },
           onSlotSelected: (slot) {
             setState(() {
-              flowState.selectedDate = slot.date;
+              flowState.selectedDate = flowState.selectedDate = DateTime(slot.startTime.year, slot.startTime.month, slot.startTime.day);
               flowState.selectedStartTime = slot.startTime;
               flowState.selectedEndTime = slot.endTime;
               flowState.selectedShiftId = slot.shiftId;
-              flowState.selectedDoctorId = slot.doctorId;
+              flowState.selectedProfessionalId = slot.professionalId;
             });
           },
           onNext: _nextStep,
@@ -156,7 +156,7 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
           onFinish: () {
             Navigator.of(context).pop();
           },
-          availableDoctors: availableDoctors, // <-- THIS LINE IS THE FIX
+          availableProfessionals: availableProfessionals, // <-- THIS LINE IS THE FIX
         );
         break;
       default:

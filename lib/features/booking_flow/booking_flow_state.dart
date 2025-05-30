@@ -2,10 +2,10 @@ import '../../models/slot_model.dart';
 
 class BookingFlowState {
   int? selectedServiceId;
-  int? selectedDoctorId;
+  int? selectedProfessionalId;
   DateTime? selectedDate;
-  String? selectedStartTime;
-  String? selectedEndTime;
+  DateTime? selectedStartTime;
+  DateTime? selectedEndTime;
   int? selectedShiftId;
   String? symptoms;
   SlotModel? selectedSlot;
@@ -14,7 +14,7 @@ class BookingFlowState {
 
   BookingFlowState({
     this.selectedServiceId,
-    this.selectedDoctorId,
+    this.selectedProfessionalId,
     this.selectedDate,
     this.selectedStartTime,
     this.selectedEndTime,
@@ -23,13 +23,13 @@ class BookingFlowState {
     this.availableSlots = const [],
   });
 
-void setSelectedSlot(SlotModel slot) {
-  selectedSlot = slot;
-  selectedServiceId = slot.serviceId;
-  selectedDoctorId = slot.doctorId;
-  selectedDate = slot.date;
-  selectedStartTime = slot.startTime;
-  selectedEndTime = slot.endTime;
-  selectedShiftId = slot.shiftId;
-}
+  void setSelectedSlot(SlotModel slot) {
+    selectedSlot = slot;
+    selectedServiceId = slot.serviceId;
+    selectedProfessionalId = slot.professionalId;
+    selectedDate = DateTime(slot.startTime.year, slot.startTime.month, slot.startTime.day);
+    selectedStartTime = slot.startTime;
+    selectedEndTime = slot.endTime;
+    selectedShiftId = slot.shiftId;
+  }
 }

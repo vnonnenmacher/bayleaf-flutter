@@ -6,57 +6,47 @@ import '../../../theme/app_colors.dart';
 
 class BookingConfirmationStep extends StatelessWidget {
   final BookingFlowState flowState;
-  final List<ProfessionalModel> availableDoctors;
+  final List<ProfessionalModel> availableProfessionals;
   final VoidCallback onPrevious;
   final VoidCallback onFinish;
 
   const BookingConfirmationStep({
     super.key,
     required this.flowState,
-    required this.availableDoctors,
+    required this.availableProfessionals,
     required this.onPrevious,
     required this.onFinish,
   });
 
-  ProfessionalModel? getDoctor() {
-    final selectedId = flowState.selectedDoctorId;
-    if (selectedId != null) {
-      try {
-        return availableDoctors.firstWhere((doc) => doc.id == selectedId);
-      } catch (_) {}
+  ProfessionalModel? getProfessional() {
+    final slot = flowState.selectedSlot;
+    if (slot == null) return null;
+    try {
+      return availableProfessionals.firstWhere((pro) => pro.id == slot.professionalId);
+    } catch (_) {
+      return null;
     }
-    if (availableDoctors.isNotEmpty) return availableDoctors.first;
-    return null;
   }
 
-  SlotModel? getSlot() {
-    if (flowState.selectedShiftId != null) {
-      try {
-        return flowState.availableSlots
-            .firstWhere((slot) => slot.shiftId == flowState.selectedShiftId);
-      } catch (_) {}
-    }
-    if (flowState.availableSlots.isNotEmpty) return flowState.availableSlots.first;
-    return null;
-  }
+  SlotModel? getSlot() => flowState.selectedSlot;
 
   @override
   Widget build(BuildContext context) {
-    final doctor = getDoctor();
+    final professional = getProfessional();
     final slot = getSlot();
 
-    final doctorName = doctor != null
-        ? '${doctor.firstName} ${doctor.lastName}'
-        : "Doctor";
+    final professionalName = professional != null
+        ? '${professional.firstName} ${professional.lastName}'
+        : "Professional";
 
-    final doctorSpecialty = "General"; // No specializations in model
     final appointmentLocation = "Bayleaf Clinic";
     final formattedDate = slot != null
-        ? DateFormat('EEE, MMM dd, yyyy').format(slot.date)
+        ? DateFormat('EEE, MMM dd, yyyy').format(slot.startTime)
         : "-";
     final formattedTime = slot != null
-        ? '${slot.startTime.substring(0, 5)} – ${slot.endTime.substring(0, 5)}'
+        ? '${DateFormat('HH:mm').format(slot.startTime)} – ${DateFormat('HH:mm').format(slot.endTime)}'
         : "-";
+    final serviceName = slot?.serviceName ?? "Service";
 
     return Container(
       color: AppColors.background,
@@ -65,7 +55,7 @@ class BookingConfirmationStep extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 18),
           child: Column(
             children: [
-              // Doctor Card
+              // Professional Card
               Container(
                 width: double.infinity,
                 margin: const EdgeInsets.only(top: 16, bottom: 16),
@@ -89,17 +79,17 @@ class BookingConfirmationStep extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 32,
                         backgroundColor: AppColors.primaryLight,
-                        backgroundImage: doctor?.avatar != null && doctor!.avatar!.isNotEmpty
-                            ? NetworkImage(doctor.avatar!)
+                        backgroundImage: professional?.avatar != null && professional!.avatar!.isNotEmpty
+                            ? NetworkImage(professional.avatar!)
                             : null,
-                        child: (doctor?.avatar == null || doctor!.avatar!.isEmpty)
+                        child: (professional?.avatar == null || professional!.avatar!.isEmpty)
                             ? Icon(Icons.person, size: 38, color: AppColors.primary)
                             : null,
                       ),
                     ),
                     const SizedBox(height: 14),
                     Text(
-                      doctorName,
+                      professionalName,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 22,
@@ -109,7 +99,7 @@ class BookingConfirmationStep extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      doctorSpecialty,
+                      serviceName, // Using the slot's service
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 16,
@@ -384,8 +374,7 @@ class BookingConfirmationStep extends StatelessWidget {
                 child: RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    text:
-                        "By booking this appointment, you agree to our ",
+                    text: "By booking this appointment, you agree to our ",
                     style: const TextStyle(
                         color: AppColors.textSecondary, fontSize: 13),
                     children: [

@@ -1,33 +1,38 @@
 // lib/models/slot_model.dart
 
 class SlotModel {
-  final int serviceId;
+  final int id;
   final int shiftId;
-  final String startTime;
-  final String endTime;
-  final DateTime date;
-  final int doctorId; // Only doctorId
+  final DateTime startTime;
+  final DateTime endTime;
+  final int professionalId;
+  final int serviceId;
+  final String? serviceName;
 
   SlotModel({
-    required this.serviceId,
+    required this.id,
     required this.shiftId,
     required this.startTime,
     required this.endTime,
-    required this.date,
-    required this.doctorId,
+    required this.professionalId,
+    required this.serviceId,
+    this.serviceName,
   });
 
   factory SlotModel.fromJson(Map<String, dynamic> json) {
+    final service = json['service'] ?? {};
     return SlotModel(
-      serviceId: json['service_id'],
+      id: json['id'],
       shiftId: json['shift_id'],
-      startTime: json['start_time'],
-      endTime: json['end_time'],
-      date: DateTime.parse(json['date']),
-      doctorId: json['doctor_id'],
+      startTime: DateTime.parse(json['start_time']),
+      endTime: DateTime.parse(json['end_time']),
+      professionalId: json['professional_id'],
+      serviceId: service['id'],
+      serviceName: service['name'],
     );
   }
 }
+
 
 class ProfessionalModel {
   final int id;

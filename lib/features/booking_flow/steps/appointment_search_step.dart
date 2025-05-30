@@ -76,26 +76,26 @@ class AppointmentSearchStep extends StatefulWidget {
   final BookingFlowState flowState;
   final void Function(SlotModel) onSlotSelected;
   final int? selectedServiceId;
-  final int? selectedDoctorId;
+  final int? selectedProfessionalId;
   final List<ServiceModel> availableServices;
-  final List<ProfessionalModel> availableDoctors;
+  final List<ProfessionalModel> availableProfessionals;
   final DateTime filterDate;
   final ValueChanged<DateTime> onDateChanged;
   final void Function(int?)? onServiceSelected;
-  final void Function(int?)? onDoctorSelected;
+  final void Function(int?)? onProfessionalSelected;
   final VoidCallback onNext;
 
   const AppointmentSearchStep({
     super.key,
     required this.flowState,
     required this.selectedServiceId,
-    this.selectedDoctorId,
+    this.selectedProfessionalId,
     required this.availableServices,
-    required this.availableDoctors,
+    required this.availableProfessionals,
     required this.filterDate,
     required this.onDateChanged,
     this.onServiceSelected,
-    this.onDoctorSelected,
+    this.onProfessionalSelected,
     required this.onSlotSelected,
     required this.onNext,
   });
@@ -105,23 +105,23 @@ class AppointmentSearchStep extends StatefulWidget {
 }
 
 class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
-  int? selectedDoctor;
+  int? selectedProfessional;
   int? selectedService;
 
-  late final Map<int, ProfessionalModel> doctorById;
+  late final Map<int, ProfessionalModel> professionalById;
 
   @override
   void initState() {
     super.initState();
-    selectedDoctor = widget.selectedDoctorId;
+    selectedProfessional = widget.selectedProfessionalId;
     selectedService = widget.selectedServiceId;
-    doctorById = {
-      for (var doc in widget.availableDoctors) doc.id: doc,
+    professionalById = {
+      for (var pro in widget.availableProfessionals) pro.id: pro,
     };
   }
 
-  void _showDoctorSelector() async {
-    final doctors = widget.availableDoctors;
+  void _showProfessionalSelector() async {
+    final professionals = widget.availableProfessionals;
     int? result = await showModalBottomSheet<int?>(
       context: context,
       isScrollControlled: true,
@@ -134,10 +134,10 @@ class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
           builder: (context, setModalState) {
             String search = searchCtrl.text.toLowerCase();
             final filtered = search.isEmpty
-                ? doctors
-                : doctors.where((d) =>
-                    d.firstName.toLowerCase().contains(search) ||
-                    d.lastName.toLowerCase().contains(search)
+                ? professionals
+                : professionals.where((p) =>
+                    p.firstName.toLowerCase().contains(search) ||
+                    p.lastName.toLowerCase().contains(search)
                   ).toList();
             return Padding(
               padding: MediaQuery.of(context).viewInsets,
@@ -150,7 +150,7 @@ class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
                       controller: searchCtrl,
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Icons.search),
-                        hintText: 'Search doctors',
+                        hintText: 'Search professionals',
                         filled: true,
                         fillColor: AppColors.greyLight,
                         border: OutlineInputBorder(
@@ -163,23 +163,23 @@ class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
                   ),
                   ListTile(
                     leading: const CircleAvatar(child: Icon(Icons.people)),
-                    title: const Text('All Doctors'),
+                    title: const Text('All Professionals'),
                     onTap: () => Navigator.of(context).pop(null),
-                    selected: selectedDoctor == null,
+                    selected: selectedProfessional == null,
                   ),
                   if (filtered.isEmpty)
                     const Padding(
                       padding: EdgeInsets.all(32.0),
-                      child: Text('No doctors found'),
+                      child: Text('No professionals found'),
                     ),
-                  ...filtered.map<Widget>((doctor) => ListTile(
-                        leading: doctor.avatar != null
-                            ? CircleAvatar(backgroundImage: NetworkImage(doctor.avatar!))
+                  ...filtered.map<Widget>((professional) => ListTile(
+                        leading: professional.avatar != null
+                            ? CircleAvatar(backgroundImage: NetworkImage(professional.avatar!))
                             : const CircleAvatar(child: Icon(Icons.person)),
-                        title: Text('${doctor.firstName} ${doctor.lastName}'),
-                        subtitle: Text(doctor.email),
-                        onTap: () => Navigator.of(context).pop(doctor.id),
-                        selected: selectedDoctor == doctor.id,
+                        title: Text('${professional.firstName} ${professional.lastName}'),
+                        subtitle: Text(professional.email),
+                        onTap: () => Navigator.of(context).pop(professional.id),
+                        selected: selectedProfessional == professional.id,
                       )),
                   const SizedBox(height: 16),
                 ],
@@ -189,9 +189,9 @@ class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
         );
       },
     );
-    if (result != selectedDoctor) {
-      setState(() => selectedDoctor = result);
-      widget.onDoctorSelected?.call(result);
+    if (result != selectedProfessional) {
+      setState(() => selectedProfessional = result);
+      widget.onProfessionalSelected?.call(result);
     }
   }
 
@@ -268,8 +268,8 @@ class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
   Widget build(BuildContext context) {
     final slots = widget.flowState.availableSlots;
     // Always up to date
-    final doctorById = {
-      for (var doc in widget.availableDoctors) doc.id: doc,
+    final professionalById = {
+      for (var pro in widget.availableProfessionals) pro.id: pro,
     };
 
     return Container(
@@ -285,23 +285,23 @@ class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
                     Expanded(
                       child: _FilterBox(
                         icon: Icons.person_search,
-                        label: 'Doctor',
-                        value: selectedDoctor == null
+                        label: 'Professional',
+                        value: selectedProfessional == null
                             ? null
                             : (() {
-                                final doc = doctorById[selectedDoctor];
-                                return doc != null
-                                    ? '${doc.firstName} ${doc.lastName}'
+                                final pro = professionalById[selectedProfessional];
+                                return pro != null
+                                    ? '${pro.firstName} ${pro.lastName}'
                                     : 'Loading...';
                               })(),
-                        onTap: _showDoctorSelector,
-                        onClear: selectedDoctor != null
+                        onTap: _showProfessionalSelector,
+                        onClear: selectedProfessional != null
                             ? () {
-                                setState(() => selectedDoctor = null);
-                                widget.onDoctorSelected?.call(null);
+                                setState(() => selectedProfessional = null);
+                                widget.onProfessionalSelected?.call(null);
                               }
                             : null,
-                        selected: selectedDoctor != null,
+                        selected: selectedProfessional != null,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -378,10 +378,10 @@ class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
                     itemCount: slots.length,
                     itemBuilder: (context, index) {
                       final slot = slots[index];
-                      final doctor = doctorById[slot.doctorId];
-                      final formattedDate = DateFormat('MMM dd, yyyy').format(slot.date);
-                      final startTime = slot.startTime;
-                      final endTime = slot.endTime;
+                      final professional = professionalById[slot.professionalId];
+                      final formattedDate = DateFormat('MMM dd, yyyy').format(slot.startTime);
+                      final startTime = DateFormat('HH:mm').format(slot.startTime);
+                      final endTime = DateFormat('HH:mm').format(slot.endTime);
 
                       return Card(
                         color: AppColors.card,
@@ -392,14 +392,15 @@ class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
                         child: ListTile(
                           onTap: () {
                             widget.onSlotSelected(slot);
+                            widget.flowState.setSelectedSlot(slot);
                             widget.onNext();
                           },
-                          leading: doctor?.avatar != null
-                              ? CircleAvatar(backgroundImage: NetworkImage(doctor!.avatar!))
+                          leading: professional?.avatar != null
+                              ? CircleAvatar(backgroundImage: NetworkImage(professional!.avatar!))
                               : const CircleAvatar(child: Icon(Icons.person)),
-                          title: doctor != null
+                          title: professional != null
                               ? Text(
-                                  '${doctor.firstName} ${doctor.lastName}',
+                                  '${professional.firstName} ${professional.lastName}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.textPrimary,
@@ -412,7 +413,7 @@ class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
                                     color: AppColors.textSecondary,
                                   ),
                                 ),
-                          subtitle: doctor != null
+                          subtitle: professional != null
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -422,7 +423,7 @@ class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
                                       style: const TextStyle(color: AppColors.textSecondary),
                                     ),
                                     Text(
-                                      doctor.email,
+                                      professional.email,
                                       style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
                                     ),
                                   ],
@@ -438,5 +439,4 @@ class _AppointmentSearchStepState extends State<AppointmentSearchStep> {
       ),
     );
   }
-
 }
