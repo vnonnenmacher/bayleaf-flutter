@@ -6,6 +6,9 @@ class AppColors {
   static const Color primaryLight = Color(0xFFD6ECE2); // 🌿 Soft mint for backgrounds and AppBar
   static const Color accent = Color(0xFF89C2D9);       // 💧 Calm blue for links or secondary actions
 
+  // ✅ Secondary Color (New)
+  static const Color secondary = Color(0xFF89C2D9);    // 💧 Calm blue (matches accent)
+
   // ✅ Greys
   static const Color greyLight = Color(0xFFF2F4F6);
   static const Color greyMedium = Color(0xFF9E9E9E);
@@ -37,4 +40,6 @@ class AppColors {
   static const Color softRed = Color(0xFFFFCDD2);
   static const Color redText = Color(0xFFD32F2F);
 
+  static const Color addButtonText = Colors.white;
+  static const Color grey = Colors.grey;
 }

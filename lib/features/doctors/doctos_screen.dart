@@ -13,7 +13,7 @@ class DoctorsScreen extends StatelessWidget {
           // TODO: Add doctor search or add flow
         },
         tooltip: 'Find Doctor',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: AppColors.addButtonText),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),

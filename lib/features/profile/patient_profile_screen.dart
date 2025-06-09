@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bayleaf_flutter/features/auth/login_screen.dart';
 import '../../theme/app_colors.dart';
+import '../../core/config.dart';
 
 class PatientProfileScreen extends StatefulWidget {
   const PatientProfileScreen({super.key});
@@ -76,7 +77,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
 
     try {
       await Dio().patch(
-        'http://10.0.2.2:8000/api/patients/profile/',
+        '${AppConfig.apiBaseUrl}api/patients/profile/',
         data: data,
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );

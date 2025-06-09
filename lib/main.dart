@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'features/auth/login_screen.dart';
 import 'features/home/home_page.dart';
 import 'services/auth_service.dart';
+import 'core/config.dart';
 
 void main() {
   runApp(const BayleafApp());
@@ -23,7 +24,7 @@ class BayleafApp extends StatelessWidget {
     if (token != null && token.isNotEmpty) {
       try {
         await Dio().get(
-          'http://10.0.2.2:8000/api/patients/retrieve/', // 🔁 replace with a real protected endpoint
+          '${AppConfig.apiBaseUrl}/api/patients/retrieve/',
           options: Options(headers: {'Authorization': 'Bearer $token'}),
         );
         return true;

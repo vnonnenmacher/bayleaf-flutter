@@ -64,7 +64,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         tooltip: showMedications ? 'Add Medication' : 'Add Vaccine',
-        child: Icon(showMedications ? Icons.add : Icons.vaccines_outlined),
+        child: Icon(showMedications ? Icons.add : Icons.vaccines_outlined, color: AppColors.addButtonText),
         onPressed: () {
           // TODO: Add logic
         },

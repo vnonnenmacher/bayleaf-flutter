@@ -13,7 +13,7 @@ class ExamsScreen extends StatelessWidget {
           // TODO: Implement exam scheduling
         },
         tooltip: 'Schedule Exam',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: AppColors.addButtonText,),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),

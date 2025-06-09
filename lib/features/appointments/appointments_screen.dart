@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import '../../theme/app_colors.dart';
 import '../booking_flow/booking_flow_screen.dart'; // <-- Added
+import '../../core/config.dart';
 
 class AppointmentsScreen extends StatefulWidget {
   const AppointmentsScreen({super.key});
@@ -31,7 +32,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
 
     try {
       final response = await Dio().get(
-        'http://10.0.2.2:8000/api/patients/appointments/',
+        '${AppConfig.apiBaseUrl}api/patients/appointments/',
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
@@ -80,7 +81,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             MaterialPageRoute(builder: (_) => const BookingFlowScreen()),
           );
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: AppColors.addButtonText,),
       ),
       body: Column(
         children: [
