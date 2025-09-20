@@ -7,14 +7,14 @@ import 'package:bayleaf_flutter/features/ai_agent/ai_agent_screen.dart'; // <- M
 import 'package:flutter/material.dart';
 
 class MenuScreenConfig {
-  final String label;
+  final String labelKey;
   final IconData icon;
-  final Widget Function() screenBuilder; // use builder for lazy instantiation
+  final Widget Function() screenBuilder;
   final String route;
   final bool enabled;
 
   const MenuScreenConfig({
-    required this.label,
+    required this.labelKey,
     required this.icon,
     required this.screenBuilder,
     required this.route,
@@ -23,49 +23,40 @@ class MenuScreenConfig {
 }
 
 class AppConfig {
-  static const String apiBaseUrl = 'http://10.0.2.2:8000/';
+  static const String apiBaseUrl = 'https://bayleaf.nonnenmacher.tech';
   // static const String apiBaseUrl = 'http://10.0.2.2:8000/';
 
   // Add your screens here (order = nav order)
   static final List<MenuScreenConfig> menuScreens = [
-    // MenuScreenConfig(
-    //   label: 'Timeline',
-    //   icon: Icons.timeline,
-    //   screenBuilder: () => const TimelineScreen(),
-    //   route: '/timeline',
-    // ),
     MenuScreenConfig(
-      label: 'Bayleaf',
+      labelKey: 'menuBayleaf',
       icon: Icons.eco_sharp,
       screenBuilder: () => const AiAgentScreen(),
       route: '/ai-agent',
     ),
     MenuScreenConfig(
-      label: 'Medications',
+      labelKey: 'menuMedications',
       icon: Icons.medication_liquid,
       screenBuilder: () => const MedicationsScreen(),
       route: '/medications',
     ),
     MenuScreenConfig(
-      label: 'Appointments',
+      labelKey: 'menuAppointments',
       icon: Icons.calendar_today,
       screenBuilder: () => const AppointmentsScreen(),
       route: '/appointments',
     ),
     MenuScreenConfig(
-      label: 'Exams',
+      labelKey: 'menuExams',
       icon: Icons.description,
       screenBuilder: () => const ExamsScreen(),
       route: '/exams',
-      enabled: true, // Toggle this to false to hide
     ),
     MenuScreenConfig(
-      label: 'Doctors',
+      labelKey: 'menuDoctors',
       icon: Icons.medical_services,
       screenBuilder: () => const DoctorsScreen(),
       route: '/doctors',
-      enabled: true,
     ),
-    // You can add more screens or set enabled: false to hide them
   ];
 }

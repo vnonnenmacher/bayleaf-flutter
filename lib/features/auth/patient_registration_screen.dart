@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../services/patient_service.dart';
+import 'package:bayleaf_flutter/l10n/app_localizations.dart';
 
 class PatientRegistrationScreen extends StatefulWidget {
   const PatientRegistrationScreen({super.key});
@@ -43,7 +44,8 @@ class _PatientRegistrationScreenState
     try {
       final parts = _birthDateController.text.split('/');
       if (parts.length != 3) {
-        throw Exception('Invalid birth date format');
+        setState(() => _error = AppLocalizations.of(context)!.invalidBirthDateFormat);
+        return;
       }
       final formattedDate =
           '${parts[2]}-${parts[1]}-${parts[0]}'; // YYYY-MM-DD
@@ -70,6 +72,8 @@ class _PatientRegistrationScreenState
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Container(
         color: const Color(0xFFD0E8F2),
@@ -92,9 +96,9 @@ class _PatientRegistrationScreenState
                   const SizedBox(height: 16),
 
                   // 🔵 Title
-                  const Text(
-                    'Patient Registration',
-                    style: TextStyle(
+                  Text(
+                    loc.registrationTitle,
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF2E7D32),
@@ -114,7 +118,7 @@ class _PatientRegistrationScreenState
                   TextFormField(
                     controller: _firstNameController,
                     decoration: InputDecoration(
-                      labelText: 'First Name',
+                      labelText: loc.firstName,
                       prefixIcon: const Icon(Icons.person),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -125,7 +129,7 @@ class _PatientRegistrationScreenState
                       ),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter first name' : null,
+                        value!.isEmpty ? loc.enterFirstName : null,
                   ),
 
                   // 🔰 Last Name
@@ -133,7 +137,7 @@ class _PatientRegistrationScreenState
                   TextFormField(
                     controller: _lastNameController,
                     decoration: InputDecoration(
-                      labelText: 'Last Name',
+                      labelText: loc.lastName,
                       prefixIcon: const Icon(Icons.person_outline),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -144,7 +148,7 @@ class _PatientRegistrationScreenState
                       ),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter last name' : null,
+                        value!.isEmpty ? loc.enterLastName : null,
                   ),
 
                   // ✉️ Email
@@ -153,7 +157,7 @@ class _PatientRegistrationScreenState
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: loc.email,
                       prefixIcon: const Icon(Icons.email),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -164,7 +168,7 @@ class _PatientRegistrationScreenState
                       ),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter email' : null,
+                        value!.isEmpty ? loc.enterEmail : null,
                   ),
 
                   // 🔒 Password
@@ -173,7 +177,7 @@ class _PatientRegistrationScreenState
                     controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: loc.password,
                       prefixIcon: const Icon(Icons.lock),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -184,7 +188,7 @@ class _PatientRegistrationScreenState
                       ),
                     ),
                     validator: (value) => value!.length < 6
-                        ? 'Minimum 6 characters'
+                        ? loc.minPasswordLength
                         : null,
                   ),
 
@@ -194,7 +198,7 @@ class _PatientRegistrationScreenState
                     controller: _birthDateController,
                     inputFormatters: [_birthDateFormatter],
                     decoration: InputDecoration(
-                      labelText: 'Birth Date (DD/MM/YYYY)',
+                      labelText: loc.birthDate,
                       prefixIcon: const Icon(Icons.cake),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -205,7 +209,7 @@ class _PatientRegistrationScreenState
                       ),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter birth date' : null,
+                        value!.isEmpty ? loc.enterBirthDate : null,
                   ),
 
                   // 🔘 Button
@@ -227,9 +231,9 @@ class _PatientRegistrationScreenState
                           ? const CircularProgressIndicator(
                               color: Colors.white,
                             )
-                          : const Text(
-                              'Register',
-                              style: TextStyle(
+                          : Text(
+                              loc.register,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
@@ -242,13 +246,13 @@ class _PatientRegistrationScreenState
                   const SizedBox(height: 24),
                   TextButton(
                     onPressed: () {
-                      context.go('/');
+                      Navigator.pop(context);
                     },
-                    child: const Text(
-                      "Back to login",
-                      style: TextStyle(
+                    child: Text(
+                      loc.backToLogin,
+                      style: const TextStyle(
                         fontSize: 16,
-                        color: Color(0xFF2E7D32), // Match the title green
+                        color: Color(0xFF2E7D32),
                       ),
                     ),
                   ),

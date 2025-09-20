@@ -7,6 +7,9 @@ import 'features/home/home_page.dart';
 import 'services/auth_service.dart';
 import 'core/config.dart';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:bayleaf_flutter/l10n/app_localizations.dart';
+
 void main() {
   runApp(const BayleafApp());
 }
@@ -54,6 +57,16 @@ class BayleafApp extends StatelessWidget {
     return MaterialApp(
       title: 'Bayleaf',
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        AppLocalizations.delegate, // Add this line!
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('pt'), // Portuguese
+      ],
       home: FutureBuilder<bool>(
         future: _attemptAutoLogin(),
         builder: (context, snapshot) {

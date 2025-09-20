@@ -1,4 +1,5 @@
 import 'package:bayleaf_flutter/core/config.dart';
+import 'package:bayleaf_flutter/features/auth/patient_registration_screen.dart';
 import 'package:bayleaf_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 import '../home/home_page.dart';
 import '../../theme/app_colors.dart';
+import 'package:bayleaf_flutter/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -32,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final healthy = await checkBackendHealth();
     if (!healthy) {
       setState(() {
-        _error = 'Our system is currently unavailable. Please try again later.';
+        _error = AppLocalizations.of(context)!.systemUnavailable;
       });
       return;
     }
@@ -68,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } catch (e) {
       setState(() {
-        _error = 'Login failed. Please check your credentials.';
+        _error = AppLocalizations.of(context)!.loginFailed;
       });
     } finally {
       if (mounted) {
@@ -77,9 +79,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Container(
         color: AppColors.background,
@@ -99,9 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 100,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Welcome to Bayleaf',
-                    style: TextStyle(
+                  Text(
+                    loc.welcome,
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       color: AppColors.primary,
@@ -123,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: loc.email,
                       prefixIcon: const Icon(Icons.email),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -134,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter your email' : null,
+                        value!.isEmpty ? loc.enterEmail : null,
                   ),
 
                   const SizedBox(height: 12),
@@ -143,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: loc.password,
                       prefixIcon: const Icon(Icons.lock),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -154,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     validator: (value) =>
-                        value!.length < 6 ? 'Minimum 6 characters' : null,
+                        value!.length < 6 ? loc.minPasswordLength : null,
                   ),
 
                   const SizedBox(height: 24),
@@ -173,9 +176,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: _isLoading ? null : _handleLogin,
                       child: _isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text(
-                              'Login',
-                              style: TextStyle(
+                          : Text(
+                              loc.login,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
@@ -188,11 +191,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   TextButton(
                     onPressed: () {
-                      context.go('/register');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const PatientRegistrationScreen()),
+                      );
                     },
-                    child: const Text(
-                      "Don't have an account? Register here",
-                      style: TextStyle(fontSize: 16),
+                    child: Text(
+                      loc.registerPrompt,
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                 ],

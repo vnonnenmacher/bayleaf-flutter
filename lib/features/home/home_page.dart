@@ -2,6 +2,25 @@ import 'package:bayleaf_flutter/core/config.dart';
 import 'package:flutter/material.dart';
 import '../profile/patient_profile_screen.dart';
 import '../../theme/app_colors.dart';
+import 'package:bayleaf_flutter/l10n/app_localizations.dart';
+
+String localizedMenuLabel(BuildContext context, String key) {
+  final loc = AppLocalizations.of(context)!;
+  switch (key) {
+    case 'menuBayleaf':
+      return loc.menuBayleaf;
+    case 'menuMedications':
+      return loc.menuMedications;
+    case 'menuAppointments':
+      return loc.menuAppointments;
+    case 'menuExams':
+      return loc.menuExams;
+    case 'menuDoctors':
+      return loc.menuDoctors;
+    default:
+      return key;
+  }
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -71,7 +90,7 @@ class _HomePageState extends State<HomePage> {
             .map(
               (s) => BottomNavigationBarItem(
                 icon: Icon(s.icon),
-                label: s.label,
+                label: localizedMenuLabel(context, s.labelKey),
               ),
             )
             .toList(),
