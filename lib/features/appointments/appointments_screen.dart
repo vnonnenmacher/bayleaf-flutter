@@ -47,7 +47,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
 
     try {
       final response = await Dio().get(
-        '${AppConfig.apiBaseUrl}api/patients/appointments/',
+        '${AppConfig.apiBaseUrl}/api/patients/appointments/',
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 

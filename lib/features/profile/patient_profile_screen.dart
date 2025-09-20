@@ -77,7 +77,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
 
     try {
       await Dio().patch(
-        '${AppConfig.apiBaseUrl}api/patients/profile/',
+        '${AppConfig.apiBaseUrl}/api/patients/profile/',
         data: data,
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );

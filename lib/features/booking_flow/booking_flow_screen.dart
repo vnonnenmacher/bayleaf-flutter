@@ -69,7 +69,7 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
       dio.options.headers['Authorization'] = 'Bearer $authToken';
 
       final response = await dio.get(
-        '${AppConfig.apiBaseUrl}api/appointments/available-slots/',
+        '${AppConfig.apiBaseUrl}/api/appointments/available-slots/',
         queryParameters: {
           'start_date': dateStr,
           'end_date': dateStr,
@@ -101,7 +101,7 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
       final dio = Dio();
       dio.options.headers['Authorization'] = 'Bearer $authToken';
 
-      final response = await dio.get('${AppConfig.apiBaseUrl}api/core/services/');
+      final response = await dio.get('${AppConfig.apiBaseUrl}/api/core/services/');
       final List results = response.data['results'];
       final services = results.map((json) => ServiceModel.fromJson(json)).toList();
 
