@@ -7,8 +7,6 @@
 .buildlog/
 .history
 
-
-
 # Flutter repo-specific
 /bin/cache/
 /bin/internal/bootstrap.bat
@@ -40,12 +38,22 @@ analysis_benchmark.json
 .packages
 .pub-preload-cache/
 .pub/
-# Ignore all build outputs
-build/*
 
-# ...but keep the compiled web bundle
+# Ignore all build outputs by default
+# (We first allow the folder so negations can work, then re-ignore its contents.)
+!build/
+build/**
+
+# Keep only the compiled web bundle
 !build/web
 !build/web/**
+
+# Keep only the release APK
+!build/app/outputs/flutter-apk/
+build/app/outputs/flutter-apk/**
+!build/app/outputs/flutter-apk/app-release.apk
+
+# Project assets
 flutter_*.png
 linked_*.ds
 unlinked.ds
