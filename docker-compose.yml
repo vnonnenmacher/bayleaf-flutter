@@ -1,0 +1,15 @@
+services:
+  flutter_web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        FLUTTER_CHANNEL: "stable"
+        FLUTTER_VERSION: "3.29.3"
+    container_name: bayleaf_flutter_web
+    # Expose locally; your edge-proxy will reverse-proxy to this
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+    # Ensure compose doesn't try to pull from a registry
+    pull_policy: build

@@ -1,0 +1,51 @@
+# ---- Build the Flutter web app (no registry dependency)
+FROM debian:bookworm-slim AS build
+
+# Versions (change FLUTTER_VERSION if you need another)
+ARG FLUTTER_CHANNEL=stable
+ARG FLUTTER_VERSION=3.29.3   # was 3.27.2
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8
+
+# System deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates curl git unzip xz-utils zip \
+    libglu1-mesa \
+  && rm -rf /var/lib/apt/lists/*
+
+# Non-root user
+RUN groupadd -r app && useradd -r -g app -m app
+USER app
+WORKDIR /home/app
+
+# Download & install Flutter SDK
+# (Official storage URL pattern)
+RUN curl -fsSL \
+  "https://storage.googleapis.com/flutter_infra_release/releases/${FLUTTER_CHANNEL}/linux/flutter_linux_${FLUTTER_VERSION}-${FLUTTER_CHANNEL}.tar.xz" \
+  -o flutter.tar.xz \
+  && mkdir -p /home/app/flutter \
+  && tar -xJf flutter.tar.xz -C /home/app \
+  && rm flutter.tar.xz
+
+ENV PATH="/home/app/flutter/bin:/home/app/flutter/bin/cache/dart-sdk/bin:${PATH}" \
+    PUB_CACHE="/home/app/.pub-cache"
+
+# Enable web and warmup
+RUN flutter config --no-analytics --enable-web && flutter --version && flutter precache --web
+
+# Resolve deps first for better caching
+WORKDIR /app
+COPY --chown=app:app pubspec.yaml pubspec.lock* ./
+RUN flutter pub get
+
+# Bring source and build
+COPY --chown=app:app . .
+RUN flutter build web --release
+
+# ---- Final NGINX
+FROM nginx:alpine
+RUN rm -f /etc/nginx/conf.d/default.conf
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build/web /usr/share/nginx/html
