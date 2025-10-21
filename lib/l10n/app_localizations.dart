@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcome.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Bayleaf'**
+  /// **'Welcome to CuidaDora'**
   String get welcome;
 
   /// No description provided for @systemUnavailable.
@@ -361,6 +361,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancelled'**
   String get statusCancelled;
+
+  /// No description provided for @vaccinesTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccines'**
+  String get vaccinesTabTitle;
+
+  /// No description provided for @vaccinesUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming Vaccines'**
+  String get vaccinesUpcoming;
+
+  /// No description provided for @vaccinesTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccines Taken'**
+  String get vaccinesTaken;
+
+  /// No description provided for @tooltipAddMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Medication'**
+  String get tooltipAddMedication;
+
+  /// No description provided for @tooltipAddVaccine.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Vaccine'**
+  String get tooltipAddVaccine;
+
+  /// No description provided for @medicationsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t load medications. Pull to refresh or try again later.'**
+  String get medicationsLoadError;
+
+  /// No description provided for @medicationsNoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No medications yet'**
+  String get medicationsNoneTitle;
+
+  /// No description provided for @medicationsNoneDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'When your doctor prescribes a medication, it will appear here.'**
+  String get medicationsNoneDesc;
+
+  /// No description provided for @medicationFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Medication'**
+  String get medicationFallback;
+
+  /// No description provided for @everyXHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {hours}h'**
+  String everyXHours(String hours);
+
+  /// No description provided for @asPrescribed.
+  ///
+  /// In en, this message translates to:
+  /// **'As prescribed'**
+  String get asPrescribed;
+
+  /// No description provided for @totalUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'Total: {amount}'**
+  String totalUnits(String amount);
+
+  /// No description provided for @brandCuidaDora.
+  ///
+  /// In en, this message translates to:
+  /// **'CuidaDora'**
+  String get brandCuidaDora;
+
+  /// No description provided for @doraHelloTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi, I’m Dora'**
+  String get doraHelloTitle;
+
+  /// No description provided for @doraHelloSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I’ll guide you through your first steps.'**
+  String get doraHelloSubtitle;
+
+  /// No description provided for @iAmNewHere.
+  ///
+  /// In en, this message translates to:
+  /// **'I’m new here'**
+  String get iAmNewHere;
+
+  /// No description provided for @iAlreadyHaveAnAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'I already have an account'**
+  String get iAlreadyHaveAnAccount;
+
+  /// No description provided for @roleDefTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your role'**
+  String get roleDefTitle;
+
+  /// No description provided for @roleDefSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This helps us personalize your experience.'**
+  String get roleDefSubtitle;
+
+  /// No description provided for @roleDefPatientTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I am following a medical treatment'**
+  String get roleDefPatientTitle;
+
+  /// No description provided for @roleDefPatientSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I need assistance to organize my care.'**
+  String get roleDefPatientSubtitle;
+
+  /// No description provided for @roleDefFamilyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I am a family member or legal guardian'**
+  String get roleDefFamilyTitle;
+
+  /// No description provided for @roleDefFamilySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I help one or more patients with their care.'**
+  String get roleDefFamilySubtitle;
+
+  /// No description provided for @roleDefCaregiverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I am a caregiver'**
+  String get roleDefCaregiverTitle;
+
+  /// No description provided for @roleDefCaregiverSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I take care of one or more patients.'**
+  String get roleDefCaregiverSubtitle;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @acceptTermsOfUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept Terms of Use of Cuida Dora'**
+  String get acceptTermsOfUse;
+
+  /// No description provided for @viewTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'View Terms of use.'**
+  String get viewTerms;
+
+  /// No description provided for @selectPatientTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a patient'**
+  String get selectPatientTitle;
+
+  /// No description provided for @selectRelativeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your relative'**
+  String get selectRelativeTitle;
+
+  /// No description provided for @addPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Add patient'**
+  String get addPatient;
+
+  /// No description provided for @noPatientsTitleProfessional.
+  ///
+  /// In en, this message translates to:
+  /// **'No patients yet'**
+  String get noPatientsTitleProfessional;
+
+  /// No description provided for @noPatientsHintProfessional.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the + button to add a new patient.'**
+  String get noPatientsHintProfessional;
+
+  /// No description provided for @noPatientsTitleRelative.
+  ///
+  /// In en, this message translates to:
+  /// **'No relatives linked'**
+  String get noPatientsTitleRelative;
+
+  /// No description provided for @noPatientsHintRelative.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the + button to add a relative under your care.'**
+  String get noPatientsHintRelative;
+
+  /// No description provided for @addPatientComingSoonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add patient'**
+  String get addPatientComingSoonTitle;
+
+  /// No description provided for @addPatientComingSoonBodyProfessional.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature will be available soon. For now, you can continue using the app and select a patient later.'**
+  String get addPatientComingSoonBodyProfessional;
+
+  /// No description provided for @addPatientComingSoonBodyRelative.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature will be available soon. For now, you can continue and link a family member later.'**
+  String get addPatientComingSoonBodyRelative;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
 }
 
 class _AppLocalizationsDelegate

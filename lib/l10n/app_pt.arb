@@ -1,5 +1,5 @@
 {
-  "welcome": "Bem-vindo ao Bayleaf",
+  "welcome": "Bem-vindo ao CuidaDora",
   "systemUnavailable": "Nosso sistema está indisponível no momento. Por favor, tente novamente mais tarde.",
   "loginFailed": "Falha no login. Verifique suas credenciais.",
   "email": "E-mail",
@@ -46,5 +46,54 @@
   "appointmentsClinicName": "Nome da Clínica",
   "statusConfirmed": "Confirmada",
   "statusRequested": "Solicitada",
-  "statusCancelled": "Cancelada"
+  "statusCancelled": "Cancelada",
+
+  "vaccinesTabTitle": "Vacinas",
+  "vaccinesUpcoming": "Próximas vacinas",
+  "vaccinesTaken": "Vacinas tomadas",
+
+  "tooltipAddMedication": "Adicionar medicamento",
+  "tooltipAddVaccine": "Adicionar vacina",
+
+  "medicationsLoadError": "Não foi possível carregar os medicamentos. Puxe para atualizar ou tente novamente depois.",
+  "medicationsNoneTitle": "Nenhum medicamento ainda",
+  "medicationsNoneDesc": "Quando seu médico prescrever um medicamento, ele aparecerá aqui.",
+  "medicationFallback": "Medicamento",
+
+  "everyXHours": "A cada {hours}h",
+  "@everyXHours": {
+    "placeholders": { "hours": { "type": "String" } }
+  },
+  "asPrescribed": "Conforme prescrição",
+  "totalUnits": "Total: {amount}",
+  "@totalUnits": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "brandCuidaDora": "CuidaDora",
+  "doraHelloTitle": "Olá, eu sou a Dora",
+  "doraHelloSubtitle": "Vou te acompanhar nos primeiros passos.",
+  "iAmNewHere": "Eu sou novo aqui",
+  "iAlreadyHaveAnAccount": "Eu já possuo uma conta",
+  "roleDefTitle": "Escolha seu perfil",
+  "roleDefSubtitle": "Isso nos ajuda a personalizar a sua experiência.",
+  "roleDefPatientTitle": "Eu sigo um tratamento médico",
+  "roleDefPatientSubtitle": "Preciso de auxílio para organizar meus cuidados.",
+  "roleDefFamilyTitle": "Sou familiar ou responsável",
+  "roleDefFamilySubtitle": "Auxilio um ou mais pacientes nos cuidados.",
+  "roleDefCaregiverTitle": "Sou cuidador(a)",
+  "roleDefCaregiverSubtitle": "Cuido de um ou mais pacientes.",
+  "back": "Voltar",
+  "acceptTermsOfUse": "Aceitar os termos de uso da Cuida Dora",
+  "viewTerms":"Ver termos de uso.",
+  "selectPatientTitle": "Selecione um paciente",
+  "selectRelativeTitle": "Selecione seu familiar",
+  "addPatient": "Adicionar paciente",
+  "noPatientsTitleProfessional": "Nenhum paciente ainda",
+  "noPatientsHintProfessional": "Toque no botão + para adicionar um novo paciente.",
+  "noPatientsTitleRelative": "Nenhum familiar vinculado",
+  "noPatientsHintRelative": "Toque no botão + para adicionar um familiar sob seus cuidados.",
+  "addPatientComingSoonTitle": "Adicionar paciente",
+  "addPatientComingSoonBodyProfessional": "Este recurso estará disponível em breve. Por enquanto, você pode continuar usando o app e selecionar um paciente depois.",
+  "addPatientComingSoonBodyRelative": "Este recurso estará disponível em breve. Por enquanto, você pode continuar e vincular um familiar depois.",
+  "ok": "OK"
 }

@@ -1,5 +1,5 @@
 {
-  "welcome": "Welcome to Bayleaf",
+  "welcome": "Welcome to CuidaDora",
   "systemUnavailable": "Our system is currently unavailable. Please try again later.",
   "loginFailed": "Login failed. Please check your credentials.",
   "email": "Email",
@@ -46,5 +46,54 @@
   "appointmentsClinicName": "Clinic Name",
   "statusConfirmed": "Confirmed",
   "statusRequested": "Requested",
-  "statusCancelled": "Cancelled"
+  "statusCancelled": "Cancelled",
+
+  "vaccinesTabTitle": "Vaccines",
+  "vaccinesUpcoming": "Upcoming Vaccines",
+  "vaccinesTaken": "Vaccines Taken",
+
+  "tooltipAddMedication": "Add Medication",
+  "tooltipAddVaccine": "Add Vaccine",
+
+  "medicationsLoadError": "Couldn’t load medications. Pull to refresh or try again later.",
+  "medicationsNoneTitle": "No medications yet",
+  "medicationsNoneDesc": "When your doctor prescribes a medication, it will appear here.",
+  "medicationFallback": "Medication",
+
+  "everyXHours": "Every {hours}h",
+  "@everyXHours": {
+    "placeholders": { "hours": { "type": "String" } }
+  },
+  "asPrescribed": "As prescribed",
+  "totalUnits": "Total: {amount}",
+  "@totalUnits": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "brandCuidaDora": "CuidaDora",
+  "doraHelloTitle": "Hi, I’m Dora",
+  "doraHelloSubtitle": "I’ll guide you through your first steps.",
+  "iAmNewHere": "I’m new here",
+  "iAlreadyHaveAnAccount": "I already have an account",
+  "roleDefTitle": "Choose your role",
+  "roleDefSubtitle": "This helps us personalize your experience.",
+  "roleDefPatientTitle": "I am following a medical treatment",
+  "roleDefPatientSubtitle": "I need assistance to organize my care.",
+  "roleDefFamilyTitle": "I am a family member or legal guardian",
+  "roleDefFamilySubtitle": "I help one or more patients with their care.",
+  "roleDefCaregiverTitle": "I am a caregiver",
+  "roleDefCaregiverSubtitle": "I take care of one or more patients.",
+  "back": "Back",
+  "acceptTermsOfUse": "Accept Terms of Use of Cuida Dora",
+  "viewTerms":"View Terms of use.",
+  "selectPatientTitle": "Select a patient",
+  "selectRelativeTitle": "Select your relative",
+  "addPatient": "Add patient",
+  "noPatientsTitleProfessional": "No patients yet",
+  "noPatientsHintProfessional": "Tap the + button to add a new patient.",
+  "noPatientsTitleRelative": "No relatives linked",
+  "noPatientsHintRelative": "Tap the + button to add a relative under your care.",
+  "addPatientComingSoonTitle": "Add patient",
+  "addPatientComingSoonBodyProfessional": "This feature will be available soon. For now, you can continue using the app and select a patient later.",
+  "addPatientComingSoonBodyRelative": "This feature will be available soon. For now, you can continue and link a family member later.",
+  "ok": "OK"
 }

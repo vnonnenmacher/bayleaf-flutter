@@ -9,7 +9,7 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
-  String get welcome => 'Bem-vindo ao Bayleaf';
+  String get welcome => 'Bem-vindo ao CuidaDora';
 
   @override
   String get systemUnavailable =>
@@ -144,4 +144,134 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get statusCancelled => 'Cancelada';
+
+  @override
+  String get vaccinesTabTitle => 'Vacinas';
+
+  @override
+  String get vaccinesUpcoming => 'Próximas vacinas';
+
+  @override
+  String get vaccinesTaken => 'Vacinas tomadas';
+
+  @override
+  String get tooltipAddMedication => 'Adicionar medicamento';
+
+  @override
+  String get tooltipAddVaccine => 'Adicionar vacina';
+
+  @override
+  String get medicationsLoadError =>
+      'Não foi possível carregar os medicamentos. Puxe para atualizar ou tente novamente depois.';
+
+  @override
+  String get medicationsNoneTitle => 'Nenhum medicamento ainda';
+
+  @override
+  String get medicationsNoneDesc =>
+      'Quando seu médico prescrever um medicamento, ele aparecerá aqui.';
+
+  @override
+  String get medicationFallback => 'Medicamento';
+
+  @override
+  String everyXHours(String hours) {
+    return 'A cada ${hours}h';
+  }
+
+  @override
+  String get asPrescribed => 'Conforme prescrição';
+
+  @override
+  String totalUnits(String amount) {
+    return 'Total: $amount';
+  }
+
+  @override
+  String get brandCuidaDora => 'CuidaDora';
+
+  @override
+  String get doraHelloTitle => 'Olá, eu sou a Dora';
+
+  @override
+  String get doraHelloSubtitle => 'Vou te acompanhar nos primeiros passos.';
+
+  @override
+  String get iAmNewHere => 'Eu sou novo aqui';
+
+  @override
+  String get iAlreadyHaveAnAccount => 'Eu já possuo uma conta';
+
+  @override
+  String get roleDefTitle => 'Escolha seu perfil';
+
+  @override
+  String get roleDefSubtitle =>
+      'Isso nos ajuda a personalizar a sua experiência.';
+
+  @override
+  String get roleDefPatientTitle => 'Eu sigo um tratamento médico';
+
+  @override
+  String get roleDefPatientSubtitle =>
+      'Preciso de auxílio para organizar meus cuidados.';
+
+  @override
+  String get roleDefFamilyTitle => 'Sou familiar ou responsável';
+
+  @override
+  String get roleDefFamilySubtitle =>
+      'Auxilio um ou mais pacientes nos cuidados.';
+
+  @override
+  String get roleDefCaregiverTitle => 'Sou cuidador(a)';
+
+  @override
+  String get roleDefCaregiverSubtitle => 'Cuido de um ou mais pacientes.';
+
+  @override
+  String get back => 'Voltar';
+
+  @override
+  String get acceptTermsOfUse => 'Aceitar os termos de uso da Cuida Dora';
+
+  @override
+  String get viewTerms => 'Ver termos de uso.';
+
+  @override
+  String get selectPatientTitle => 'Selecione um paciente';
+
+  @override
+  String get selectRelativeTitle => 'Selecione seu familiar';
+
+  @override
+  String get addPatient => 'Adicionar paciente';
+
+  @override
+  String get noPatientsTitleProfessional => 'Nenhum paciente ainda';
+
+  @override
+  String get noPatientsHintProfessional =>
+      'Toque no botão + para adicionar um novo paciente.';
+
+  @override
+  String get noPatientsTitleRelative => 'Nenhum familiar vinculado';
+
+  @override
+  String get noPatientsHintRelative =>
+      'Toque no botão + para adicionar um familiar sob seus cuidados.';
+
+  @override
+  String get addPatientComingSoonTitle => 'Adicionar paciente';
+
+  @override
+  String get addPatientComingSoonBodyProfessional =>
+      'Este recurso estará disponível em breve. Por enquanto, você pode continuar usando o app e selecionar um paciente depois.';
+
+  @override
+  String get addPatientComingSoonBodyRelative =>
+      'Este recurso estará disponível em breve. Por enquanto, você pode continuar e vincular um familiar depois.';
+
+  @override
+  String get ok => 'OK';
 }
