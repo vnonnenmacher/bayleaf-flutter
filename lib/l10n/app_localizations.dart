@@ -215,7 +215,7 @@ abstract class AppLocalizations {
   /// No description provided for @menuBayleaf.
   ///
   /// In en, this message translates to:
-  /// **'Bayleaf'**
+  /// **'Dora'**
   String get menuBayleaf;
 
   /// No description provided for @menuMedications.
@@ -241,6 +241,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Doctors'**
   String get menuDoctors;
+
+  /// No description provided for @menuTreatment.
+  ///
+  /// In en, this message translates to:
+  /// **'Treatment'**
+  String get menuTreatment;
+
+  /// No description provided for @menuOrientations.
+  ///
+  /// In en, this message translates to:
+  /// **'Orientations'**
+  String get menuOrientations;
 
   /// No description provided for @appointmentsUpcoming.
   ///
@@ -533,7 +545,7 @@ abstract class AppLocalizations {
   /// No description provided for @selectPatientTitle.
   ///
   /// In en, this message translates to:
-  /// **'Select a patient'**
+  /// **'Select your patient'**
   String get selectPatientTitle;
 
   /// No description provided for @selectRelativeTitle.
@@ -551,13 +563,13 @@ abstract class AppLocalizations {
   /// No description provided for @noPatientsTitleProfessional.
   ///
   /// In en, this message translates to:
-  /// **'No patients yet'**
+  /// **'No patients linked'**
   String get noPatientsTitleProfessional;
 
   /// No description provided for @noPatientsHintProfessional.
   ///
   /// In en, this message translates to:
-  /// **'Tap the + button to add a new patient.'**
+  /// **'Tap the + button to add a patient under your care.'**
   String get noPatientsHintProfessional;
 
   /// No description provided for @noPatientsTitleRelative.
@@ -595,6 +607,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get ok;
+
+  /// No description provided for @doraChatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with Dora'**
+  String get doraChatTitle;
+
+  /// No description provided for @typeYourMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Type your message...'**
+  String get typeYourMessage;
+
+  /// No description provided for @profile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile_title;
+
+  /// No description provided for @profile_edit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get profile_edit_title;
+
+  /// No description provided for @profile_edit_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re now editing your profile'**
+  String get profile_edit_mode;
+
+  /// No description provided for @profile_update_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully!'**
+  String get profile_update_success;
+
+  /// No description provided for @profile_update_fail.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update profile.'**
+  String get profile_update_fail;
+
+  /// No description provided for @profile_tabs_personal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Info'**
+  String get profile_tabs_personal;
+
+  /// No description provided for @profile_tabs_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get profile_tabs_address;
+
+  /// No description provided for @profile_tabs_financial.
+  ///
+  /// In en, this message translates to:
+  /// **'Financials'**
+  String get profile_tabs_financial;
+
+  /// No description provided for @profile_first_name.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get profile_first_name;
+
+  /// No description provided for @profile_last_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get profile_last_name;
+
+  /// No description provided for @profile_date_of_birth.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get profile_date_of_birth;
+
+  /// No description provided for @profile_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get profile_email;
+
+  /// No description provided for @profile_street.
+  ///
+  /// In en, this message translates to:
+  /// **'Street'**
+  String get profile_street;
+
+  /// No description provided for @profile_city.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get profile_city;
+
+  /// No description provided for @profile_zip.
+  ///
+  /// In en, this message translates to:
+  /// **'ZIP Code'**
+  String get profile_zip;
+
+  /// No description provided for @profile_state.
+  ///
+  /// In en, this message translates to:
+  /// **'State'**
+  String get profile_state;
+
+  /// No description provided for @profile_forgot_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password'**
+  String get profile_forgot_password;
+
+  /// No description provided for @profile_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get profile_logout;
+
+  /// No description provided for @profile_logout_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to logout?'**
+  String get profile_logout_confirm;
+
+  /// No description provided for @profile_financial_placeholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Financial info not implemented yet.'**
+  String get profile_financial_placeholder;
+
+  /// No description provided for @profile_unknown_tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown tab selected.'**
+  String get profile_unknown_tab;
 }
 
 class _AppLocalizationsDelegate

@@ -42,4 +42,6 @@ class AppColors {
 
   static const Color addButtonText = Colors.white;
   static const Color grey = Colors.grey;
+
+  static const textHint = Color(0xFF9E9E9E);
 }

@@ -67,7 +67,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidBirthDateFormat => 'Invalid birth date format';
 
   @override
-  String get menuBayleaf => 'Bayleaf';
+  String get menuBayleaf => 'Dora';
 
   @override
   String get menuMedications => 'Medications';
@@ -80,6 +80,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get menuDoctors => 'Doctors';
+
+  @override
+  String get menuTreatment => 'Treatment';
+
+  @override
+  String get menuOrientations => 'Orientations';
 
   @override
   String get appointmentsUpcoming => 'Upcoming';
@@ -237,7 +243,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewTerms => 'View Terms of use.';
 
   @override
-  String get selectPatientTitle => 'Select a patient';
+  String get selectPatientTitle => 'Select your patient';
 
   @override
   String get selectRelativeTitle => 'Select your relative';
@@ -246,11 +252,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addPatient => 'Add patient';
 
   @override
-  String get noPatientsTitleProfessional => 'No patients yet';
+  String get noPatientsTitleProfessional => 'No patients linked';
 
   @override
   String get noPatientsHintProfessional =>
-      'Tap the + button to add a new patient.';
+      'Tap the + button to add a patient under your care.';
 
   @override
   String get noPatientsTitleRelative => 'No relatives linked';
@@ -272,4 +278,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ok => 'OK';
+
+  @override
+  String get doraChatTitle => 'Chat with Dora';
+
+  @override
+  String get typeYourMessage => 'Type your message...';
+
+  @override
+  String get profile_title => 'Profile';
+
+  @override
+  String get profile_edit_title => 'Edit Profile';
+
+  @override
+  String get profile_edit_mode => 'You\'re now editing your profile';
+
+  @override
+  String get profile_update_success => 'Profile updated successfully!';
+
+  @override
+  String get profile_update_fail => 'Failed to update profile.';
+
+  @override
+  String get profile_tabs_personal => 'Personal Info';
+
+  @override
+  String get profile_tabs_address => 'Address';
+
+  @override
+  String get profile_tabs_financial => 'Financials';
+
+  @override
+  String get profile_first_name => 'First Name';
+
+  @override
+  String get profile_last_name => 'Last Name';
+
+  @override
+  String get profile_date_of_birth => 'Date of Birth';
+
+  @override
+  String get profile_email => 'Email';
+
+  @override
+  String get profile_street => 'Street';
+
+  @override
+  String get profile_city => 'City';
+
+  @override
+  String get profile_zip => 'ZIP Code';
+
+  @override
+  String get profile_state => 'State';
+
+  @override
+  String get profile_forgot_password => 'Forgot Password';
+
+  @override
+  String get profile_logout => 'Logout';
+
+  @override
+  String get profile_logout_confirm => 'Are you sure you want to logout?';
+
+  @override
+  String get profile_financial_placeholder =>
+      'Financial info not implemented yet.';
+
+  @override
+  String get profile_unknown_tab => 'Unknown tab selected.';
 }

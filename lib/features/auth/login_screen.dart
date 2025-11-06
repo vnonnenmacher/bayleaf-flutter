@@ -1,5 +1,6 @@
 // lib/features/auth/login_screen.dart
 import 'package:bayleaf_flutter/core/config.dart';
+import 'package:bayleaf_flutter/features/auth/welcome_dora_screen.dart';
 import 'package:bayleaf_flutter/services/auth_service.dart'; // for checkBackendHealth()
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import '../home/home_page.dart';
 import '../../theme/app_colors.dart';
 import 'package:bayleaf_flutter/l10n/app_localizations.dart';
 
-// NEW imports for routing based on enum and patient selection screen
+// NEW imports for routing
 import 'package:bayleaf_flutter/models/user_type.dart';
 import 'package:bayleaf_flutter/features/patients/patient_selection_screen.dart';
 
@@ -28,14 +29,13 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   String? _error;
 
-  // SharedPreferences keys (keep consistent across app)
   static const _kAuthToken = 'authToken';
   static const _kRefreshToken = 'refreshToken';
   static const _kSavedEmail = 'savedEmail';
   static const _kSavedPassword = 'savedPassword';
-  static const _kUserType = 'user_type';        // stored as String: 'patient'|'professional'|'relative'
-  static const _kUserId = 'user_id';            // stored as int
-  static const _kPatientPid = 'patient_pid';    // stored as String (uuid)
+  static const _kUserType = 'user_type';
+  static const _kUserId = 'user_id';
+  static const _kPatientPid = 'patient_pid';
 
   @override
   void initState() {
@@ -78,7 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
       final email = _emailController.text.trim();
       final password = _passwordController.text;
 
-      // 1) Login (unauthenticated request)
       final loginRes = await Dio().post(
         '${AppConfig.apiBaseUrl}/api/users/login/',
         data: {'email': email, 'password': password},
@@ -90,15 +89,13 @@ class _LoginScreenState extends State<LoginScreen> {
         throw Exception('Invalid token payload.');
       }
 
-      // 2) Persist tokens + saved creds
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_kAuthToken, accessToken);
       await prefs.setString(_kRefreshToken, refreshToken);
       await prefs.setString(_kSavedEmail, email);
       await prefs.setString(_kSavedPassword, password);
 
-      // 3) Fetch user type/ids (authorized request)
-      String userTypeStr = 'patient'; // safe default
+      String userTypeStr = 'patient';
       int? userId;
       String? patientPid;
 
@@ -109,21 +106,16 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
         final typeRes = await authed.get('/api/users/me/type/');
         final data = typeRes.data as Map<String, dynamic>;
-
         userTypeStr = (data['user_type'] as String?) ?? 'patient';
         final ids = (data['ids'] as Map?) ?? {};
         userId = ids['user_id'] as int?;
         patientPid = ids['patient_pid'] as String?;
-      } catch (_) {
-        // If this fails, we still proceed with default patient routing below
-      }
+      } catch (_) {}
 
-      // 4) Persist identity — YES, keep these lines exactly (your question)
       await prefs.setString(_kUserType, userTypeStr);
       if (userId != null) await prefs.setInt(_kUserId, userId!);
       if (patientPid != null) await prefs.setString(_kPatientPid, patientPid!);
 
-      // 5) Route by enum (PatientSelectionScreen expects UserType, not String)
       if (!mounted) return;
       final ut = userTypeFromString(userTypeStr);
 
@@ -139,7 +131,6 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } on DioException catch (e) {
-      // Prefer backend-provided error when available
       final backendMsg = e.response?.data is Map
           ? (e.response?.data['detail'] as String?)
           : null;
@@ -177,15 +168,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Logo
                     Image.asset(
                       'assets/images/cuidadora_icon.png',
                       height: 100,
                       width: 100,
                     ),
                     const SizedBox(height: 16),
-
-                    // Title
                     Text(
                       loc.welcome,
                       style: const TextStyle(
@@ -195,7 +183,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 32),
-
                     if (_error != null)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
@@ -204,8 +191,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: const TextStyle(color: Colors.red),
                         ),
                       ),
-
-                    // Email
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -227,10 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ? loc.enterEmail
                               : null,
                     ),
-
                     const SizedBox(height: 12),
-
-                    // Password
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
@@ -251,10 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ? loc.minPasswordLength
                               : null,
                     ),
-
                     const SizedBox(height: 24),
-
-                    // Login button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -279,12 +258,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                       ),
                     ),
-
                     const SizedBox(height: 24),
 
-                    // Back
+                    // 👇 UPDATED BACK BUTTON LOGIC
+                    // Back button
                     TextButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (_) => const WelcomeDoraScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      },
                       child: Text(
                         loc.back,
                         style: const TextStyle(

@@ -1,9 +1,12 @@
+import 'package:bayleaf_flutter/features/ai_agent/dora_screen.dart';
 import 'package:bayleaf_flutter/features/appointments/appointments_screen.dart';
 import 'package:bayleaf_flutter/features/doctors/doctos_screen.dart';
 import 'package:bayleaf_flutter/features/exams/exams_screen.dart';
 import 'package:bayleaf_flutter/features/medications/medications_screen.dart';
 // import 'package:bayleaf_flutter/features/timeline/timeline_screen.dart';
-import 'package:bayleaf_flutter/features/ai_agent/ai_agent_screen.dart'; // <- Make sure to use the correct path
+import 'package:bayleaf_flutter/features/ai_agent/dora_screen.dart'; // <- Make sure to use the correct path
+import 'package:bayleaf_flutter/features/orientations/orientations_screen.dart';
+import 'package:bayleaf_flutter/features/treatment/my_treatment_screen.dart';
 import 'package:flutter/material.dart';
 
 class MenuScreenConfig {
@@ -30,17 +33,17 @@ class AppConfig {
   static final List<MenuScreenConfig> menuScreens = [
     MenuScreenConfig(
       labelKey: 'menuBayleaf',
-      icon: Icons.eco_sharp,
-      screenBuilder: () => const AiAgentScreen(),
+      icon: Icons.support_agent,
+      screenBuilder: () => const DoraScreen(),
       route: '/ai-agent',
     ),
     MenuScreenConfig(
-      labelKey: 'menuMedications',
+      labelKey: 'menuTreatment',
       icon: Icons.medication_liquid,
-      screenBuilder: () => const MedicationsScreen(),
-      route: '/medications',
+      screenBuilder: () => const MyTreatmentScreen(),
+      route: '/treatment',
     ),
-    MenuScreenConfig(
+    /* MenuScreenConfig(
       labelKey: 'menuAppointments',
       icon: Icons.calendar_today,
       screenBuilder: () => const AppointmentsScreen(),
@@ -51,12 +54,12 @@ class AppConfig {
       icon: Icons.description,
       screenBuilder: () => const ExamsScreen(),
       route: '/exams',
-    ),
+    ),*/
     MenuScreenConfig(
-      labelKey: 'menuDoctors',
+      labelKey: 'menuOrientations',
       icon: Icons.medical_services,
-      screenBuilder: () => const DoctorsScreen(),
-      route: '/doctors',
+      screenBuilder: () => const OrientationsScreen(),
+      route: '/orientations',
     ),
   ];
 }

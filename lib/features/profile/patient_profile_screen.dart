@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bayleaf_flutter/features/auth/login_screen.dart';
+import 'package:bayleaf_flutter/l10n/app_localizations.dart';
 import '../../theme/app_colors.dart';
 import '../../core/config.dart';
 
@@ -13,7 +14,8 @@ class PatientProfileScreen extends StatefulWidget {
   State<PatientProfileScreen> createState() => _PatientProfileScreenState();
 }
 
-class _PatientProfileScreenState extends State<PatientProfileScreen> with TickerProviderStateMixin {
+class _PatientProfileScreenState extends State<PatientProfileScreen>
+    with TickerProviderStateMixin {
   bool isEditing = false;
   int selectedTab = 0;
 
@@ -24,12 +26,14 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _streetController = TextEditingController(text: '1234 Main St');
-  final TextEditingController _cityController = TextEditingController(text: 'Porto Alegre');
-  final TextEditingController _zipController = TextEditingController(text: '90100-000');
-  final TextEditingController _stateController = TextEditingController(text: 'RS');
-
-  final List<String> tabs = ['Personal Info', 'Address', 'Financials'];
+  final TextEditingController _streetController =
+      TextEditingController(text: '1234 Main St');
+  final TextEditingController _cityController =
+      TextEditingController(text: 'Porto Alegre');
+  final TextEditingController _zipController =
+      TextEditingController(text: '90100-000');
+  final TextEditingController _stateController =
+      TextEditingController(text: 'RS');
 
   @override
   void initState() {
@@ -43,7 +47,10 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
       isEditing = !isEditing;
       if (isEditing) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("You're now editing your profile")),
+          SnackBar(
+            content:
+                Text(AppLocalizations.of(context)!.profile_edit_mode),
+          ),
         );
       }
     });
@@ -83,11 +90,17 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Profile updated successfully!")),
+        SnackBar(
+          content:
+              Text(AppLocalizations.of(context)!.profile_update_success),
+        ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to update profile.")),
+        SnackBar(
+          content:
+              Text(AppLocalizations.of(context)!.profile_update_fail),
+        ),
       );
     }
   }
@@ -114,12 +127,20 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
+    final List<String> tabs = [
+      loc.profile_tabs_personal,
+      loc.profile_tabs_address,
+      loc.profile_tabs_financial,
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
         title: Text(
-          isEditing ? 'Edit Profile' : 'Profile',
+          isEditing ? loc.profile_edit_title : loc.profile_title,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: AppColors.primary,
@@ -127,7 +148,8 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
         ),
         actions: [
           IconButton(
-            icon: Icon(isEditing ? Icons.check : Icons.edit, color: Colors.black87),
+            icon: Icon(isEditing ? Icons.check : Icons.edit,
+                color: Colors.black87),
             onPressed: isEditing ? _saveProfile : _toggleEdit,
           )
         ],
@@ -151,7 +173,8 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
                     child: CircleAvatar(
                       radius: 16,
                       backgroundColor: Colors.white,
-                      child: Icon(Icons.edit, size: 18, color: Colors.black87),
+                      child:
+                          Icon(Icons.edit, size: 18, color: Colors.black87),
                     ),
                   ),
               ],
@@ -161,45 +184,61 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
           Center(
             child: Text(
               '$firstName $lastName',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(tabs.length, (index) {
-              final selected = selectedTab == index;
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: selected ? AppColors.primary : Colors.grey[300],
-                    foregroundColor: selected ? Colors.white : Colors.black87,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                  onPressed: () => setState(() => selectedTab = index),
-                  child: Text(tabs[index]),
-                ),
-              );
-            }),
+          SizedBox(
+            height: 48,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(tabs.length, (index) {
+                  final selected = selectedTab == index;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            selected ? AppColors.primary : Colors.grey[300],
+                        foregroundColor:
+                            selected ? Colors.white : Colors.black87,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      onPressed: () => setState(() => selectedTab = index),
+                      child: Text(
+                        tabs[index],
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
           ),
           const SizedBox(height: 12),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(24),
               children: [
-                ..._buildTabContent(),
+                ..._buildTabContent(loc),
                 const Divider(),
                 ListTile(
                   leading: const Icon(Icons.lock_reset),
-                  title: const Text('Forgot Password'),
+                  title: Text(loc.profile_forgot_password),
                   onTap: () {
                     // TODO: Implement forgot password flow
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.red),
-                  title: const Text('Logout', style: TextStyle(color: Colors.red)),
+                  title: Text(
+                    loc.profile_logout,
+                    style: const TextStyle(color: Colors.red),
+                  ),
                   onTap: _logout,
                 ),
               ],
@@ -210,28 +249,56 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
     );
   }
 
-  List<Widget> _buildTabContent() {
+  List<Widget> _buildTabContent(AppLocalizations loc) {
     switch (selectedTab) {
       case 0:
         return [
-          _editableCard(icon: Icons.person, label: 'First Name', controller: _firstNameController, isEditable: isEditing),
-          _editableCard(icon: Icons.person, label: 'Last Name', controller: _lastNameController, isEditable: isEditing),
-          _birthDateCard(),
-          _readonlyCard(icon: Icons.email, label: 'Email', value: email, lock: true),
+          _editableCard(
+              icon: Icons.person,
+              label: loc.profile_first_name,
+              controller: _firstNameController,
+              isEditable: isEditing),
+          _editableCard(
+              icon: Icons.person,
+              label: loc.profile_last_name,
+              controller: _lastNameController,
+              isEditable: isEditing),
+          _birthDateCard(loc.profile_date_of_birth),
+          _readonlyCard(
+              icon: Icons.email,
+              label: loc.profile_email,
+              value: email,
+              lock: true),
         ];
       case 1:
         return [
-          _editableCard(icon: Icons.location_on, label: 'Street', controller: _streetController, isEditable: isEditing),
-          _editableCard(icon: Icons.location_city, label: 'City', controller: _cityController, isEditable: isEditing),
-          _editableCard(icon: Icons.pin_drop, label: 'ZIP Code', controller: _zipController, isEditable: isEditing),
-          _editableCard(icon: Icons.map, label: 'State', controller: _stateController, isEditable: isEditing),
+          _editableCard(
+              icon: Icons.location_on,
+              label: loc.profile_street,
+              controller: _streetController,
+              isEditable: isEditing),
+          _editableCard(
+              icon: Icons.location_city,
+              label: loc.profile_city,
+              controller: _cityController,
+              isEditable: isEditing),
+          _editableCard(
+              icon: Icons.pin_drop,
+              label: loc.profile_zip,
+              controller: _zipController,
+              isEditable: isEditing),
+          _editableCard(
+              icon: Icons.map,
+              label: loc.profile_state,
+              controller: _stateController,
+              isEditable: isEditing),
         ];
       case 2:
         return [
-          const ListTile(title: Text('Financial info not implemented yet.'))
+          ListTile(title: Text(loc.profile_financial_placeholder))
         ];
       default:
-        return [const Text('Unknown tab selected.')];
+        return [Text(loc.profile_unknown_tab)];
     }
   }
 
@@ -243,26 +310,38 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
   }) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
       child: ListTile(
         leading: Icon(icon, color: AppColors.primary),
-        title: Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
+        title: Text(label,
+            style: const TextStyle(
+                fontWeight: FontWeight.w500, fontSize: 14)),
         subtitle: isEditable
-            ? TextField(controller: controller, decoration: const InputDecoration(border: InputBorder.none))
-            : Text(controller.text, style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
+            ? TextField(
+                controller: controller,
+                decoration:
+                    const InputDecoration(border: InputBorder.none),
+              )
+            : Text(controller.text,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w400, fontSize: 16)),
       ),
     );
   }
 
-  Widget _birthDateCard() {
+  Widget _birthDateCard(String label) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
       child: ListTile(
         leading: const Icon(Icons.cake, color: AppColors.primary),
-        title: const Text('Date of Birth', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
+        title: Text(label,
+            style: const TextStyle(
+                fontWeight: FontWeight.w500, fontSize: 14)),
         subtitle: isEditing
             ? GestureDetector(
                 onTap: _pickDate,
@@ -277,7 +356,8 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
               )
             : Text(
                 DateFormat.yMMMMd().format(birthDate),
-                style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+                style: const TextStyle(
+                    fontWeight: FontWeight.w400, fontSize: 16),
               ),
       ),
     );
@@ -291,13 +371,19 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> with Ticker
   }) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
       child: ListTile(
         leading: Icon(icon, color: AppColors.primary),
-        title: Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
-        subtitle: Text(value, style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
-        trailing: lock ? const Icon(Icons.lock_outline, size: 18) : null,
+        title: Text(label,
+            style: const TextStyle(
+                fontWeight: FontWeight.w500, fontSize: 14)),
+        subtitle: Text(value,
+            style: const TextStyle(
+                fontWeight: FontWeight.w400, fontSize: 16)),
+        trailing:
+            lock ? const Icon(Icons.lock_outline, size: 18) : null,
       ),
     );
   }
