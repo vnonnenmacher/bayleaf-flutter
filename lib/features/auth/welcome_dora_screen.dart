@@ -5,7 +5,6 @@ import 'package:bayleaf_flutter/l10n/app_localizations.dart';
 import 'package:bayleaf_flutter/theme/app_colors.dart';
 
 import 'login_screen.dart';
-import 'patient_registration_screen.dart';
 
 class WelcomeDoraScreen extends StatelessWidget {
   const WelcomeDoraScreen({super.key});
@@ -15,48 +14,46 @@ class WelcomeDoraScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, c) {
-            final h = c.maxHeight;
-            final w = c.maxWidth;
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppColors.primaryLight, AppColors.background],
+            ),
+          ),
+          child: LayoutBuilder(
+            builder: (context, c) {
+              final h = c.maxHeight;
+              final w = c.maxWidth;
+              final imageBandH = (h * 0.50).clamp(320.0, 520.0);
+              final illoH = math.min(imageBandH * 0.8, 340.0);
+              final buttonsMaxWidth = w * 0.72;
 
-            // reserve ~half screen for Dora and center her inside it
-            final imageBandH = (h * 0.50).clamp(320.0, 520.0);
-            final illoH = math.min(imageBandH * 0.8, 340.0); // max Dora size
-            final buttonsMaxWidth = w * 0.70;
-
-            return DecoratedBox(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [AppColors.primaryLight, AppColors.background],
-                ),
-              ),
-              child: Column(
+              return Column(
                 children: [
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 20),
 
-                  // brand row
+                  // === BRAND HEADER ===
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/images/cuidadora_icon.png', width: 36, height: 36),
+                      Image.asset('assets/images/cuidadora_icon.png', width: 40, height: 40),
                       const SizedBox(width: 10),
                       Text(
                         l10n.brandCuidaDora,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: .3,
-                            ),
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                          letterSpacing: .3,
+                        ),
                       ),
                     ],
                   ),
 
-                  // === IMAGE BAND (Dora centered vertically here) ===
+                  // === DORA ILLUSTRATION ===
                   SizedBox(
                     height: imageBandH,
                     child: Align(
@@ -69,72 +66,91 @@ class WelcomeDoraScreen extends StatelessWidget {
                     ),
                   ),
 
-
-                  // === TEXT + BUTTONS (no space between image and title) ===
+                  // === TEXT & BUTTONS ===
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // no extra gap above
                         Text(
                           l10n.doraHelloTitle,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                              ),
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 6),
                         Text(
                           l10n.doraHelloSubtitle,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textSecondary,
+                            height: 1.4,
+                          ),
                         ),
-                        const SizedBox(height: 18),
+                        const SizedBox(height: 24),
 
-                        // buttons (same width, right below the text)
+                        // === BUTTONS ===
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: buttonsMaxWidth),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              FilledButton.icon(
+                              // Primary action (filled)
+                              ElevatedButton.icon(
                                 onPressed: () {
                                   Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (_) => const RoleDefinitionScreen()),
+                                    MaterialPageRoute(
+                                        builder: (_) => const RoleDefinitionScreen()),
                                   );
                                 },
                                 icon: const Icon(Icons.person_add_alt_1),
-                                label: Text(l10n.iAmNewHere),
-                                style: FilledButton.styleFrom(
+                                label: Text(
+                                  l10n.iAmNewHere,
+                                  style: const TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.primary,
-                                  foregroundColor: AppColors.addButtonText,
+                                  foregroundColor: Colors.white,
+                                  elevation: 6,
                                   padding: const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(14),
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 14),
+
+                              // Secondary action (outlined with soft background)
                               OutlinedButton.icon(
                                 onPressed: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(builder: (_) => const LoginScreen()),
                                   );
                                 },
-                                icon: const Icon(Icons.login),
-                                label: Text(l10n.iAlreadyHaveAnAccount),
+                                icon: const Icon(Icons.login_rounded),
+                                label: Text(
+                                  l10n.iAlreadyHaveAnAccount,
+                                  style: const TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                                 style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: AppColors.primary, width: 1.4),
+                                  side: const BorderSide(color: AppColors.primary, width: 1.3),
                                   foregroundColor: AppColors.primary,
+                                  backgroundColor: Colors.white.withOpacity(0.9),
                                   padding: const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(14),
                                   ),
-                                  backgroundColor: Colors.white.withOpacity(.92),
+                                  shadowColor: AppColors.primary.withOpacity(0.2),
                                 ),
                               ),
                             ],
@@ -144,12 +160,11 @@ class WelcomeDoraScreen extends StatelessWidget {
                     ),
                   ),
 
-                  // breathe + safe area
-                  SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
+                  const SizedBox(height: 24),
                 ],
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
