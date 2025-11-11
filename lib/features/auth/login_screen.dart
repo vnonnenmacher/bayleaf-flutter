@@ -1,16 +1,12 @@
-// lib/features/auth/login_screen.dart
 import 'package:bayleaf_flutter/core/config.dart';
 import 'package:bayleaf_flutter/features/auth/welcome_dora_screen.dart';
-import 'package:bayleaf_flutter/services/auth_service.dart'; // for checkBackendHealth()
+import 'package:bayleaf_flutter/services/auth_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../home/home_page.dart';
 import '../../theme/app_colors.dart';
 import 'package:bayleaf_flutter/l10n/app_localizations.dart';
-
-// NEW imports for routing
 import 'package:bayleaf_flutter/models/user_type.dart';
 import 'package:bayleaf_flutter/features/patients/patient_selection_screen.dart';
 
@@ -45,17 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _loadSavedCreds() async {
     final prefs = await SharedPreferences.getInstance();
-    final savedEmail = prefs.getString(_kSavedEmail);
-    final savedPassword = prefs.getString(_kSavedPassword);
-    if (savedEmail != null) _emailController.text = savedEmail;
-    if (savedPassword != null) _passwordController.text = savedPassword;
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+    _emailController.text = prefs.getString(_kSavedEmail) ?? '';
+    _passwordController.text = prefs.getString(_kSavedPassword) ?? '';
   }
 
   Future<void> _handleLogin() async {
@@ -146,6 +133,29 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  InputDecoration _inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      prefixIcon: Icon(icon, color: AppColors.primary.withOpacity(0.8)),
+      labelText: label,
+      labelStyle: TextStyle(
+        color: AppColors.textSecondary.withOpacity(0.8),
+        fontSize: 15,
+      ),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide:
+            BorderSide(color: AppColors.primary.withOpacity(0.25), width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
@@ -167,11 +177,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 key: _formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    const SizedBox(height: 24),
                     Image.asset(
                       'assets/images/cuidadora_icon.png',
-                      height: 100,
-                      width: 100,
+                      height: 90,
+                      width: 90,
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -182,65 +194,49 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: AppColors.primary,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 28),
+
                     if (_error != null)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
                           _error!,
                           style: const TextStyle(color: Colors.red),
+                          textAlign: TextAlign.center,
                         ),
                       ),
+
+                    // Email field
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                        labelText: loc.email,
-                        prefixIcon: const Icon(Icons.email),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.primary),
-                        ),
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
-                      validator: (value) =>
-                          (value == null || value.trim().isEmpty)
-                              ? loc.enterEmail
-                              : null,
+                      decoration:
+                          _inputDecoration(loc.email, Icons.email_outlined),
+                      validator: (v) =>
+                          (v == null || v.trim().isEmpty) ? loc.enterEmail : null,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
+
+                    // Password field
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: loc.password,
-                        prefixIcon: const Icon(Icons.lock),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.primary),
-                        ),
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
-                      validator: (value) =>
-                          (value == null || value.length < 6)
-                              ? loc.minPasswordLength
-                              : null,
+                      decoration: _inputDecoration(loc.password, Icons.lock_outline),
+                      validator: (v) => (v == null || v.length < 6)
+                          ? loc.minPasswordLength
+                          : null,
                     ),
                     const SizedBox(height: 24),
+
+                    // Login button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(14),
                           ),
                           elevation: 6,
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -258,10 +254,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                       ),
                     ),
-                    const SizedBox(height: 24),
 
-                    // 👇 UPDATED BACK BUTTON LOGIC
-                    // Back button
+                    const SizedBox(height: 20),
+
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pushAndRemoveUntil(

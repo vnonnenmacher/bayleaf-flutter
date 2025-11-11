@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:bayleaf_flutter/core/config.dart'; // AppConfig.apiBaseUrl
+import 'package:bayleaf_flutter/core/config.dart';
 import 'package:bayleaf_flutter/features/home/home_page.dart';
 import 'package:bayleaf_flutter/l10n/app_localizations.dart';
 import 'package:bayleaf_flutter/theme/app_colors.dart';
@@ -8,16 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../services/patient_service.dart';
 import '../../services/auth_service.dart';
-
-// NEW: enum + selection screen requires a UserType (not String)
 import 'package:bayleaf_flutter/models/user_type.dart';
 import 'package:bayleaf_flutter/features/patients/patient_selection_screen.dart';
 
 class PatientRegistrationScreen extends StatefulWidget {
-  /// Comes from RoleDefinitionScreen as: 'patient' | 'family' | 'caregiver'
   final String? selectedRole;
   const PatientRegistrationScreen({super.key, this.selectedRole});
 
@@ -48,7 +44,6 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
   bool _acceptedTerms = false;
   String? _error;
 
-  // Pref keys (aligned with LoginScreen)
   static const _kAuthToken = 'authToken';
   static const _kRefreshToken = 'refreshToken';
   static const _kSavedEmail = 'savedEmail';
@@ -58,11 +53,6 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
   static const _kPatientPid = 'patient_pid';
 
   String get _roleRaw => (widget.selectedRole ?? 'patient').toLowerCase();
-
-  /// Maps screen roles to backend user types/endpoints
-  /// 'patient'   -> patient flow
-  /// 'family'    -> relative flow
-  /// 'caregiver' -> professional flow
   String get _normalizedRole {
     switch (_roleRaw) {
       case 'family':
@@ -75,15 +65,14 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
   }
 
   Future<void> _registerForRole({
-    required String roleNormalized, // 'patient' | 'relative' | 'professional'
+    required String roleNormalized,
     required String firstName,
     required String lastName,
     required String email,
     required String password,
-    String? birthDateIso, // only for patient
+    String? birthDateIso,
   }) async {
     if (roleNormalized == 'patient') {
-      // Patient registration via your service
       await _patientService.registerPatient(
         firstName: firstName,
         lastName: lastName,
@@ -94,14 +83,12 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
       return;
     }
 
-    // professional -> /api/professionals/register/
-    // relative     -> /api/patients/relatives/register/
     final path = roleNormalized == 'professional'
         ? '/api/professionals/register/'
         : '/api/patients/relatives/register/';
-
     final uri = Uri.parse('${AppConfig.apiBaseUrl}$path');
-    final payload = <String, dynamic>{
+
+    final payload = {
       "first_name": firstName,
       "last_name": lastName,
       "email": email,
@@ -118,7 +105,6 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
     );
 
     if (resp.statusCode < 200 || resp.statusCode >= 300) {
-      // Try to extract backend error message
       try {
         final body = jsonDecode(resp.body);
         final detail = (body is Map && body["detail"] is String)
@@ -147,7 +133,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
     final prefs = await SharedPreferences.getInstance();
     final access = prefs.getString(_kAuthToken);
 
-    String userTypeStr = 'patient'; // safe default
+    String userTypeStr = 'patient';
     int? userId;
     String? patientPid;
 
@@ -163,27 +149,19 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
         final ids = (data['ids'] as Map?) ?? {};
         userId = ids['user_id'] as int?;
         patientPid = ids['patient_pid'] as String?;
-      } catch (_) {
-        // keep defaults; we'll still navigate
-      }
+      } catch (_) {}
     }
 
-    // persist identity (keep these lines)
     await prefs.setString(_kUserType, userTypeStr);
     if (userId != null) await prefs.setInt(_kUserId, userId!);
     if (patientPid != null) await prefs.setString(_kPatientPid, patientPid!);
 
     if (!mounted) return;
-
-    // Convert to enum for PatientSelectionScreen
     final ut = userTypeFromString(userTypeStr);
 
-    // route by user type
     if (ut == UserType.professional || ut == UserType.relative) {
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (_) => PatientSelectionScreen(userType: ut),
-        ),
+        MaterialPageRoute(builder: (_) => PatientSelectionScreen(userType: ut)),
         (route) => false,
       );
     } else {
@@ -197,7 +175,8 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
   void _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
     if (!_acceptedTerms) {
-      setState(() => _error = AppLocalizations.of(context)!.acceptTermsOfUse);
+      setState(() =>
+          _error = AppLocalizations.of(context)!.acceptTermsOfUse);
       return;
     }
 
@@ -212,8 +191,8 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
       if (role == 'patient') {
         final parts = _birthDateController.text.split('/');
         if (parts.length != 3) {
-          setState(() =>
-              _error = AppLocalizations.of(context)!.invalidBirthDateFormat);
+          setState(() => _error =
+              AppLocalizations.of(context)!.invalidBirthDateFormat);
           return;
         }
         birthDateIso = '${parts[2]}-${parts[1]}-${parts[0]}';
@@ -224,7 +203,6 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
       final email = _emailController.text.trim();
       final pass = _passwordController.text;
 
-      // 1) Register appropriate role
       await _registerForRole(
         roleNormalized: role,
         firstName: first,
@@ -234,10 +212,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
         birthDateIso: birthDateIso,
       );
 
-      // 2) Login and persist tokens
       await _loginPersistTokens(email: email, password: pass);
-
-      // 3) Fetch user type + route
       await _fetchPersistUserTypeAndRoute();
     } catch (e) {
       setState(() => _error = e.toString());
@@ -246,10 +221,32 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
     }
   }
 
+  InputDecoration _inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      prefixIcon: Icon(icon, color: AppColors.primary.withOpacity(0.8)),
+      labelText: label,
+      labelStyle: TextStyle(
+        color: AppColors.textSecondary.withOpacity(0.8),
+        fontSize: 15,
+      ),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide:
+            BorderSide(color: AppColors.primary.withOpacity(0.25), width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
     final isPatient = _normalizedRole == 'patient';
 
     return Scaffold(
@@ -269,16 +266,15 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                 key: _formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Brand icon
+                    const SizedBox(height: 24),
                     Image.asset(
                       'assets/images/cuidadora_icon.png',
                       height: 80,
                       width: 80,
                     ),
                     const SizedBox(height: 16),
-
-                    // Title
                     Text(
                       loc.registrationTitle,
                       textAlign: TextAlign.center,
@@ -288,8 +284,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                         color: AppColors.primary,
                       ),
                     ),
-
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 28),
 
                     if (_error != null)
                       Padding(
@@ -301,127 +296,55 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                         ),
                       ),
 
-                    // First Name
                     TextFormField(
                       controller: _firstNameController,
-                      decoration: InputDecoration(
-                        labelText: loc.firstName,
-                        prefixIcon: const Icon(Icons.person),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.primary),
-                        ),
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
-                      validator: (value) =>
-                          (value == null || value.isEmpty)
-                              ? loc.enterFirstName
-                              : null,
+                      decoration: _inputDecoration(loc.firstName, Icons.person),
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? loc.enterFirstName : null,
                     ),
+                    const SizedBox(height: 14),
 
-                    const SizedBox(height: 12),
-
-                    // Last Name
                     TextFormField(
                       controller: _lastNameController,
-                      decoration: InputDecoration(
-                        labelText: loc.lastName,
-                        prefixIcon: const Icon(Icons.person_outline),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.primary),
-                        ),
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
-                      validator: (value) =>
-                          (value == null || value.isEmpty)
-                              ? loc.enterLastName
-                              : null,
+                      decoration: _inputDecoration(
+                          loc.lastName, Icons.person_outline),
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? loc.enterLastName : null,
                     ),
+                    const SizedBox(height: 14),
 
-                    const SizedBox(height: 12),
-
-                    // Email
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: loc.email,
-                        prefixIcon: const Icon(Icons.email),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.primary),
-                        ),
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
-                      validator: (value) =>
-                          (value == null || value.isEmpty)
-                              ? loc.enterEmail
-                              : null,
+                      decoration:
+                          _inputDecoration(loc.email, Icons.email_outlined),
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? loc.enterEmail : null,
                     ),
+                    const SizedBox(height: 14),
 
-                    const SizedBox(height: 12),
-
-                    // Password
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: loc.password,
-                        prefixIcon: const Icon(Icons.lock),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.primary),
-                        ),
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
-                      validator: (value) =>
-                          (value == null || value.length < 6)
-                              ? loc.minPasswordLength
-                              : null,
+                      decoration: _inputDecoration(loc.password, Icons.lock),
+                      validator: (v) => (v == null || v.length < 6)
+                          ? loc.minPasswordLength
+                          : null,
                     ),
+                    const SizedBox(height: 14),
 
-                    const SizedBox(height: 12),
-
-                    // Birth Date (only visible/validated for patient)
                     if (isPatient)
                       TextFormField(
                         controller: _birthDateController,
                         inputFormatters: [_birthDateFormatter],
-                        decoration: InputDecoration(
-                          labelText: loc.birthDate,
-                          prefixIcon: const Icon(Icons.cake),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColors.primary),
-                          ),
-                          fillColor: Colors.white,
-                          filled: true,
-                        ),
-                        validator: (value) {
-                          if (!isPatient) return null;
-                          return (value == null || value.isEmpty)
-                              ? loc.enterBirthDate
-                              : null;
-                        },
+                        decoration:
+                            _inputDecoration(loc.birthDate, Icons.cake_outlined),
+                        validator: (v) => (v == null || v.isEmpty)
+                            ? loc.enterBirthDate
+                            : null,
                       ),
 
-                    // Terms of Use
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 18),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -431,7 +354,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                               setState(() => _acceptedTerms = v ?? false),
                           activeColor: AppColors.primary,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 6),
                         Expanded(
                           child: Wrap(
                             children: [
@@ -442,11 +365,9 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                                   fontSize: 14,
                                 ),
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(width: 4),
                               InkWell(
-                                onTap: () {
-                                  // TODO: push terms screen or open URL
-                                },
+                                onTap: () {},
                                 child: Text(
                                   loc.viewTerms,
                                   style: const TextStyle(
@@ -462,23 +383,24 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                       ],
                     ),
 
-                    // Register button
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 22),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: _acceptedTerms
+                              ? AppColors.primary
+                              : AppColors.primary.withOpacity(0.4),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(14),
                           ),
                           elevation: 6,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        onPressed:
-                            _isLoading || !_acceptedTerms ? null : _handleRegister,
+                        onPressed: _isLoading ? null : _handleRegister,
                         child: _isLoading
-                            ? const CircularProgressIndicator(color: Colors.white)
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
                             : Text(
                                 loc.register,
                                 style: const TextStyle(
@@ -490,8 +412,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                       ),
                     ),
 
-                    // Back
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 18),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(

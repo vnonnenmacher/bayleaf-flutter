@@ -89,58 +89,77 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
     return Scaffold(
       backgroundColor: AppColors.background, // soft mint base
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(86),
-        child: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          backgroundColor: const Color(0xFFCFE6DA), // slightly darker mint
-          titleSpacing: 0,
-          title: Padding(
-            padding: const EdgeInsets.only(left: 20, top: 16, bottom: 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: AppColors.appBarTitle,
-                    fontSize: 23,
-                    fontWeight: FontWeight.w700,
-                  ),
+        preferredSize: const Size.fromHeight(84),
+        child: Stack(
+          children: [
+            // 🎨 Gradient background (mint → background)
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFFCFE6DA),
+                    Color(0xFFEFF6F2),
+                  ],
+                  stops: [0.0, 1.0],
                 ),
-                const SizedBox(height: 1),
-                Text(
-                  "Escolha quem deseja acompanhar hoje",
-                  style: TextStyle(
-                    color: AppColors.textSecondary.withOpacity(0.8),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
+              ),
+            ),
+
+            // 🧭 AppBar content
+            AppBar(
+              automaticallyImplyLeading: false,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              titleSpacing: 0,
+              title: Padding(
+                padding: const EdgeInsets.only(left: 20, top: 14, bottom: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: AppColors.appBarTitle,
+                        fontSize: 23,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Escolha quem deseja acompanhar hoje",
+                      style: TextStyle(
+                        color: AppColors.textSecondary.withOpacity(0.8),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16, top: 10),
+                  child: GestureDetector(
+                    onTap: _goToProfile,
+                    child: CircleAvatar(
+                      backgroundColor: AppColors.primary.withOpacity(0.12),
+                      radius: 16,
+                      child: const Icon(
+                        Icons.person_outline,
+                        color: AppColors.primary,
+                        size: 22,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16, top: 12),
-              child: GestureDetector(
-                onTap: _goToProfile,
-                child: CircleAvatar(
-                  backgroundColor: AppColors.primary.withOpacity(0.12),
-                  radius: 16,
-                  child: const Icon(
-                    Icons.person_outline,
-                    color: AppColors.primary,
-                    size: 22,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
-
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         onPressed: () {},
@@ -162,10 +181,9 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
           return RefreshIndicator(
             onRefresh: _refresh,
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               itemCount: patients.length,
-              itemBuilder: (context, i) =>
-                  _buildPatientCard(context, patients[i]),
+              itemBuilder: (context, i) => _buildPatientCard(context, patients[i]),
             ),
           );
         },
