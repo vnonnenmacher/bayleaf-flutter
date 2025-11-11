@@ -173,12 +173,16 @@ class _DoraScreenState extends State<DoraScreen>
           ),
         ),
         child: SafeArea(
-          child: Column(
+          child: Stack(
             children: [
-              _buildNextEvents(),
-              const Divider(height: 1, color: AppColors.greyLight),
-              Expanded(child: _buildChatList()),
-              _buildInputBar(loc),
+              Column(
+                children: [
+                  _buildNextEvents(),
+                  const Divider(height: 1, color: AppColors.greyLight),
+                  Expanded(child: _buildChatList()),
+                  _buildInputBar(loc),
+                ],
+              ),
               if (_showSuggestions) _buildFloatingSuggestions(),
             ],
           ),
@@ -294,8 +298,7 @@ class _DoraScreenState extends State<DoraScreen>
           duration: const Duration(milliseconds: 250),
           opacity: 1,
           child: Align(
-            alignment:
-                isDora ? Alignment.centerLeft : Alignment.centerRight,
+            alignment: isDora ? Alignment.centerLeft : Alignment.centerRight,
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 6),
               padding:
@@ -357,8 +360,7 @@ class _DoraScreenState extends State<DoraScreen>
                     ),
                   if (msg.hasQuickReplies && msg.quickReplies != null)
                     Padding(
-                      padding:
-                          const EdgeInsets.only(top: 10, left: 28),
+                      padding: const EdgeInsets.only(top: 10, left: 28),
                       child: Row(
                         children: [
                           _buildInlineReplyButton(
@@ -453,8 +455,7 @@ class _DoraScreenState extends State<DoraScreen>
     return GestureDetector(
       onTap: () => _handleQuickReply(msgIndex, text),
       child: Container(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(20),
@@ -480,8 +481,8 @@ class _DoraScreenState extends State<DoraScreen>
 
   Widget _buildFloatingSuggestions() {
     return Positioned(
-      bottom: 80,
-      right: 16,
+      bottom: 100, // sits right above the input bar
+      right: 20,
       child: AnimatedOpacity(
         opacity: _showSuggestions ? 1.0 : 0.0,
         duration: const Duration(milliseconds: 250),
@@ -497,8 +498,8 @@ class _DoraScreenState extends State<DoraScreen>
             _buildSuggestionButton("Adicionar exame",
                 Icons.biotech_outlined, Colors.orange.shade400),
             const SizedBox(height: 10),
-            _buildSuggestionButton(
-                "Orientação médica", Icons.shield_outlined, Colors.lightBlue.shade300),
+            _buildSuggestionButton("Orientação médica",
+                Icons.shield_outlined, Colors.lightBlue.shade300),
           ],
         ),
       ),

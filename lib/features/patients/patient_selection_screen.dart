@@ -1,3 +1,4 @@
+import 'package:bayleaf_flutter/features/patients/patient_creation_by_user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bayleaf_flutter/models/user_type.dart';
@@ -162,11 +163,18 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const PatientCreationByUserScreen(),
+            ),
+          );
+        },
         tooltip: t.addPatient,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: const Icon(Icons.add, color: Colors.white),
       ),
+
       body: FutureBuilder<List<PatientListItem>>(
         future: _future,
         builder: (context, snap) {
