@@ -7,6 +7,9 @@ import 'package:bayleaf_flutter/features/profile/patient_profile_screen.dart';
 import 'package:bayleaf_flutter/l10n/app_localizations.dart';
 import 'package:bayleaf_flutter/theme/app_colors.dart';
 
+// ✅ Toggle this to test the empty screen
+bool empty = false;
+
 class PatientSelectionScreen extends StatefulWidget {
   final UserType userType;
   const PatientSelectionScreen({super.key, required this.userType});
@@ -26,6 +29,9 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
 
   Future<List<PatientListItem>> _load() async {
     await Future.delayed(const Duration(milliseconds: 500));
+
+    if (empty) return []; // 👈 show empty state if true
+
     return [
       PatientListItem(
         pid: '001',
@@ -47,16 +53,6 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
           Observation(Icons.check_circle_outline, AppColors.successDark, "Tomou todas as medicações do dia"),
           Observation(Icons.local_hospital_outlined, AppColors.warningDark, "Avaliação de fisioterapia agendada"),
           Observation(Icons.warning_amber_rounded, AppColors.errorDark, "Pressão arterial elevada"),
-        ],
-      ),
-      PatientListItem(
-        pid: '003',
-        firstName: 'Ana',
-        nickname: 'Avó',
-        gender: 'F',
-        observations: const [
-          Observation(Icons.check_circle_outline, AppColors.successDark, "Atividades cognitivas concluídas"),
-          Observation(Icons.healing_outlined, AppColors.warningDark, "Consulta de rotina semana que vem"),
         ],
       ),
     ];
@@ -88,27 +84,20 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
         : t.selectRelativeTitle;
 
     return Scaffold(
-      backgroundColor: AppColors.background, // soft mint base
+      backgroundColor: AppColors.background,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(84),
         child: Stack(
           children: [
-            // 🎨 Gradient background (mint → background)
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFCFE6DA),
-                    Color(0xFFEFF6F2),
-                  ],
-                  stops: [0.0, 1.0],
+                  colors: [Color(0xFFCFE6DA), Color(0xFFEFF6F2)],
                 ),
               ),
             ),
-
-            // 🧭 AppBar content
             AppBar(
               automaticallyImplyLeading: false,
               elevation: 0,
@@ -118,7 +107,6 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
                 padding: const EdgeInsets.only(left: 20, top: 14, bottom: 6),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       title,
@@ -134,7 +122,6 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
                       style: TextStyle(
                         color: AppColors.textSecondary.withOpacity(0.8),
                         fontSize: 14,
-                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ],
@@ -148,11 +135,8 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
                     child: CircleAvatar(
                       backgroundColor: AppColors.primary.withOpacity(0.12),
                       radius: 16,
-                      child: const Icon(
-                        Icons.person_outline,
-                        color: AppColors.primary,
-                        size: 22,
-                      ),
+                      child: const Icon(Icons.person_outline,
+                          color: AppColors.primary, size: 22),
                     ),
                   ),
                 ),
@@ -161,13 +145,12 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
           ],
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const PatientCreationByUserScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => const PatientCreationByUserScreen()),
           );
         },
         tooltip: t.addPatient,
@@ -181,17 +164,53 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
+
           final patients = snap.data ?? [];
           if (patients.isEmpty) {
-            return const Center(child: Text("Nenhum paciente encontrado"));
+            // ✅ Empty state
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.people_outline,
+                        size: 64,
+                        color: AppColors.primary.withOpacity(0.4)),
+                    const SizedBox(height: 16),
+                    const Text(
+                      "Você não tem nenhum paciente adicionado.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textSecondary,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Toque no botão + para adicionar um novo paciente.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: AppColors.textSecondary.withOpacity(0.8),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
           }
 
+          // ✅ Normal list
           return RefreshIndicator(
             onRefresh: _refresh,
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               itemCount: patients.length,
-              itemBuilder: (context, i) => _buildPatientCard(context, patients[i]),
+              itemBuilder: (context, i) =>
+                  _buildPatientCard(context, patients[i]),
             ),
           );
         },
@@ -200,7 +219,6 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
   }
 
   Widget _buildPatientCard(BuildContext context, PatientListItem p) {
-    // Determine overall severity
     Color statusColor = AppColors.successDark;
     if (p.observations.any((o) => o.color == AppColors.errorDark)) {
       statusColor = AppColors.errorDark;
@@ -227,7 +245,6 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Left accent bar
             Container(
               width: 6,
               height: 160,
@@ -241,8 +258,7 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
             ),
             Expanded(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -255,11 +271,8 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
                             color: statusColor.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
-                            Icons.person,
-                            color: AppColors.primary,
-                            size: 30,
-                          ),
+                          child: const Icon(Icons.person,
+                              color: AppColors.primary, size: 30),
                         ),
                         const SizedBox(width: 14),
                         Expanded(
@@ -279,8 +292,7 @@ class _PatientSelectionScreenState extends State<PatientSelectionScreen> {
                                 p.nickname ?? '',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: AppColors.textSecondary
-                                      .withOpacity(0.9),
+                                  color: AppColors.textSecondary.withOpacity(0.9),
                                 ),
                               ),
                             ],
@@ -327,7 +339,6 @@ class _PatientInfoRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(icon, size: 20, color: color.withOpacity(0.9)),
           const SizedBox(width: 8),

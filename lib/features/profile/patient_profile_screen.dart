@@ -19,15 +19,15 @@ class _PatientProfileScreenState extends State<PatientProfileScreen>
   bool isEditing = false;
   int selectedTab = 0;
 
-  String firstName = 'John';
-  String lastName = 'Doe';
+  String firstName = 'Gustavo';
+  String lastName = 'Silva';
   DateTime birthDate = DateTime(1992, 7, 21);
   String email = 'patients@example.com';
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _streetController =
-      TextEditingController(text: '1234 Main St');
+      TextEditingController(text: '1234 Rua das Flores');
   final TextEditingController _cityController =
       TextEditingController(text: 'Porto Alegre');
   final TextEditingController _zipController =
@@ -78,7 +78,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen>
         "city": _cityController.text,
         "state": _stateController.text,
         "zip_code": _zipController.text,
-        "country": "USA"
+        "country": "BR"
       }
     };
 
@@ -128,7 +128,6 @@ class _PatientProfileScreenState extends State<PatientProfileScreen>
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
     final List<String> tabs = [
       loc.profile_tabs_personal,
       loc.profile_tabs_address,
@@ -228,7 +227,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen>
                 const Divider(),
                 ListTile(
                   leading: const Icon(Icons.lock_reset),
-                  title: Text(loc.profile_forgot_password),
+                  title: Text("Trocar senha"),
                   onTap: () {
                     // TODO: Implement forgot password flow
                   },
@@ -294,12 +293,98 @@ class _PatientProfileScreenState extends State<PatientProfileScreen>
               isEditable: isEditing),
         ];
       case 2:
+        // ✅ Mock financial info
         return [
-          ListTile(title: Text(loc.profile_financial_placeholder))
+          Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.credit_card, color: AppColors.primary),
+                      SizedBox(width: 8),
+                      Text(
+                        "Assinatura Ativa",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const Text("Plano: CuidaDora Premium"),
+                  const SizedBox(height: 6),
+                  const Text("Valor: R\$ 39,90 / mês"),
+                  const SizedBox(height: 6),
+                  const Text("Status: Ativa"),
+                  const SizedBox(height: 6),
+                  const Text("Renovação: 25 de Novembro de 2025"),
+                  const SizedBox(height: 18),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Baixando nota fiscal..."),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.download),
+                    label: const Text("Baixar nota fiscal"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            "Histórico de Pagamentos",
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black87),
+          ),
+          const SizedBox(height: 8),
+          ...[
+            _buildInvoiceItem("Outubro/2025", "R\$ 39,90", true),
+            _buildInvoiceItem("Setembro/2025", "R\$ 39,90", true),
+            _buildInvoiceItem("Agosto/2025", "R\$ 39,90", true),
+          ]
         ];
       default:
         return [Text(loc.profile_unknown_tab)];
     }
+  }
+
+  Widget _buildInvoiceItem(String month, String value, bool paid) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ListTile(
+        leading: Icon(
+          paid ? Icons.check_circle : Icons.pending,
+          color: paid ? AppColors.successDark : AppColors.warningDark,
+        ),
+        title: Text(month),
+        subtitle: Text("Valor: $value"),
+        trailing: Text(
+          paid ? "Pago" : "Pendente",
+          style: TextStyle(
+            color: paid ? AppColors.successDark : AppColors.warningDark,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _editableCard({
@@ -346,7 +431,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen>
             ? GestureDetector(
                 onTap: _pickDate,
                 child: Text(
-                  DateFormat.yMMMMd().format(birthDate),
+                  "21 de Julho de 1992",
                   style: const TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 16,
@@ -354,10 +439,10 @@ class _PatientProfileScreenState extends State<PatientProfileScreen>
                   ),
                 ),
               )
-            : Text(
-                DateFormat.yMMMMd().format(birthDate),
-                style: const TextStyle(
-                    fontWeight: FontWeight.w400, fontSize: 16),
+            : const Text(
+                "21 de Julho de 1992",
+                style:
+                    TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
               ),
       ),
     );
